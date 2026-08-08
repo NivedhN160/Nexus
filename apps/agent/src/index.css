@@ -1,0 +1,111 @@
+:root {
+  --bg-dark: #0B0F14;
+  --bg-panel: #111827;
+  --accent-teal: #00F0FF;
+  --accent-teal-dim: rgba(0, 240, 255, 0.15);
+  --warning-amber: #FFB020;
+  --error-red: #FF4444;
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(17, 24, 39, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  overflow: hidden; /* Mission control should not have global scroll */
+}
+
+/* Glass panel utility */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+/* Typography */
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.text-teal { color: var(--accent-teal); }
+.text-amber { color: var(--warning-amber); }
+.text-red { color: var(--error-red); }
+.text-muted { color: var(--text-secondary); }
+
+/* Layout Grid */
+.nexus-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr 300px;
+  grid-template-rows: 60px 1fr 40px;
+  height: 100vh;
+  width: 100vw;
+}
+
+.top-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-panel);
+}
+
+.left-nav {
+  grid-column: 1 / 2;
+  border-right: 1px solid var(--border-color);
+  padding: 24px 12px;
+  background: var(--bg-panel);
+}
+
+.main-stage {
+  grid-column: 2 / 3;
+  padding: 24px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.right-context {
+  grid-column: 3 / 4;
+  border-left: 1px solid var(--border-color);
+  padding: 24px;
+  background: var(--bg-panel);
+  overflow-y: auto;
+}
+
+.bottom-strip {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-panel);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-size: 12px;
+}
+
+/* Base button */
+.btn {
+  background: var(--accent-teal-dim);
+  color: var(--accent-teal);
+  border: 1px solid var(--accent-teal);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn:hover {
+  background: var(--accent-teal);
+  color: var(--bg-dark);
+}

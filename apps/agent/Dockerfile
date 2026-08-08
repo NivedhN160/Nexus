@@ -1,28 +1,14 @@
-# Headless Daemon Dockerfile for N.E.O.S
-FROM python:3.10-slim
-
-# Install system dependencies required for pyaudio, portaudio, and llama-cpp
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    portaudio19-dev \
-    libasound2-dev \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
+COPY package.json ./
+RUN npm install
 
-# Install Python packages
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy application source
 COPY . .
+RUN npm run build
 
-# Environment variables
-ENV PYTHONUNBUFFERED=1
-
-# Note: You must mount the .gguf model file into /app/ via docker-compose or run arguments
-CMD ["python", "daemon.py"]
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
