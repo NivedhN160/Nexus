@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import SocialGraph from './components/SocialGraph';
 import LeadStream from './components/LeadStream';
+import AuditHealth from './components/AuditHealth';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('agent');
@@ -130,7 +131,7 @@ export default function App() {
           </div>
         )}
         
-        {activeTab !== 'agent' && activeTab !== 'social' && activeTab !== 'leads' && (
+        {activeTab !== 'agent' && activeTab !== 'social' && activeTab !== 'leads' && activeTab !== 'audit' && (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="glass-panel" style={{ padding: '48px', textAlign: 'center' }}>
               <Cpu size={48} className="text-teal" style={{ marginBottom: '16px', opacity: 0.5 }} />
@@ -142,6 +143,7 @@ export default function App() {
 
         {activeTab === 'social' && <SocialGraph />}
         {activeTab === 'leads' && <LeadStream />}
+        {activeTab === 'audit' && <AuditHealth />}
       </main>
 
       {/* Right Context */}
