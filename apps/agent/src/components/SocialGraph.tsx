@@ -1,12 +1,43 @@
-import React from 'react';
-import { Share2, Clock, CheckCircle2, Activity, Globe } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Share2, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+
+interface CampaignPost {
+  platform: string;
+  caption: string;
+  status: string;
+}
+
+interface Campaign {
+  id: number;
+  run_at: string | null;
+  status: string;
+  posts: CampaignPost[];
+}
 
 export default function SocialGraph() {
-  const scheduledPosts = [
-    { id: 1, platform: 'Twitter / X', content: 'Excited to announce the new Nexus platform architecture! 🚀 #AI #BuildInPublic', time: 'In 2 hours', status: 'queued' },
-    { id: 2, platform: 'LinkedIn', content: 'Just finished migrating our entire stack to a monolithic decoupled architecture. The performance gains are incredible.', time: 'In 5 hours', status: 'queued' },
-    { id: 3, platform: 'Twitter / X', content: 'Micro-cents for LLM pricing? Yes, it solves floating point errors at scale. 💡', time: 'Yesterday', status: 'published' }
-  ];
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/campaigns`, {
+          headers: {
+            'X-API-Key': import.meta.env.VITE_API_KEY || 'nexus_dev_key'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setCampaigns(data);
+        }
+      } catch (e) {
+        console.error('Failed to fetch campaigns', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCampaigns();
+  }, []);
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '24px', padding: '24px' }}>
@@ -16,55 +47,68 @@ export default function SocialGraph() {
           <h2 style={{ fontSize: '20px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Share2 className="text-teal" size={20} /> Social Graph
           </h2>
-          <p className="text-muted" style={{ fontSize: '14px', marginTop: '4px' }}>Cross-platform distribution & variant generation</p>
+          <p className="text-muted" style={{ fontSize: '14px', marginTop: '4px' }}>Multi-platform distribution campaigns</p>
         </div>
-        <button className="btn" style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Activity size={14} /> Force Sync
+        <button className="btn" style={{ fontSize: '13px' }}>
+          + New Campaign
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-        {[
-          { label: 'Total Reach', value: '14.2k', change: '+12%' },
-          { label: 'Active Platforms', value: '2', change: 'X, LinkedIn' },
-          { label: 'Queued Posts', value: '12', change: 'Next: 2 hrs' }
-        ].map(stat => (
-          <div key={stat.label} className="glass-panel" style={{ padding: '20px' }}>
-            <div className="text-muted" style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>{stat.label}</div>
-            <div className="mono text-teal" style={{ fontSize: '28px', margin: '8px 0' }}>{stat.value}</div>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{stat.change}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1, overflowY: 'auto' }}>
+        {loading && (
+          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            Loading campaigns...
           </div>
-        ))}
-      </div>
+        )}
+        
+        {!loading && campaigns.length === 0 && (
+          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            No campaigns active.
+          </div>
+        )}
 
-      <div className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Globe size={16} className="text-teal" />
-          <h3 style={{ fontSize: '14px', fontWeight: 500 }}>Content Pipeline</h3>
-        </div>
-        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
-          {scheduledPosts.map(post => (
-            <div key={post.id} style={{ 
-              display: 'flex', 
-              gap: '16px', 
-              padding: '16px', 
-              background: 'rgba(0,0,0,0.2)', 
-              borderRadius: '8px',
-              borderLeft: post.status === 'published' ? '2px solid var(--text-secondary)' : '2px solid var(--accent-teal)'
-            }}>
-              <div style={{ width: '100px', flexShrink: 0 }}>
-                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '4px' }}>{post.platform}</div>
-                <div className="mono text-teal" style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {post.status === 'published' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                  {post.time}
-                </div>
+        {campaigns.map((camp) => (
+          <div key={camp.id} className="glass-panel" style={{ padding: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Campaign #{camp.id}</h3>
+                <span style={{ 
+                  fontSize: '11px', 
+                  padding: '4px 8px', 
+                  borderRadius: '12px', 
+                  background: camp.status === 'draft' ? 'rgba(255,255,255,0.1)' : 'rgba(0, 240, 255, 0.1)',
+                  color: camp.status === 'draft' ? 'var(--text-secondary)' : 'var(--accent-teal)',
+                  textTransform: 'uppercase'
+                }}>
+                  {camp.status}
+                </span>
               </div>
-              <div style={{ flex: 1, fontSize: '14px', color: 'var(--text-primary)', lineHeight: '1.5' }}>
-                {post.content}
+              <div className="mono text-muted" style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Clock size={12} /> {camp.run_at ? new Date(camp.run_at).toLocaleString() : 'Not scheduled'}
               </div>
             </div>
-          ))}
-        </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              {camp.posts.map((post, pIdx) => (
+                <div key={pIdx} style={{ background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>{post.platform}</span>
+                    {post.status === 'delivered' ? (
+                      <CheckCircle2 size={16} className="text-teal" />
+                    ) : post.status === 'failed' ? (
+                      <AlertCircle size={16} className="text-amber" />
+                    ) : (
+                      <Clock size={16} className="text-muted" />
+                    )}
+                  </div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+                    {post.caption}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
     </div>
