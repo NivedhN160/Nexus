@@ -206,7 +206,6 @@ Worker must **crash-recover**: if process dies after external id assigned, do no
 | Pricing | Input / cached input / output / reasoning / per-call fees in **micro-cents** |
 | `GET /metering/usage` | Aggregates for UI |
 | Quota check | Before billable work; over quota → **429** or **402** |
-| `POST /webhooks/stripe` | Signature verify; ignore replays; upgrade plan in test mode |
 
 All LLM and vision calls from brain/services must create metering events.
 

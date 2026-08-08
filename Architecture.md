@@ -152,7 +152,7 @@ You are the only required tenant in v1. Multi-tenant SaaS is optional later.
 | **Research** | Ask for company/job signals | Browser stack scrapes/scores → ranked list in chat + optional save |
 | **Content** | Submit draft | Save post → rank images (mismatch guard) → build social variants → schedule |
 | **Growth** | Visitor submits widget | Validate → rate limit → honeypot → geo → store → show on Leads |
-| **Billing** | Any billable LLM/vision call | Idempotent meter → quota check → 429/402 when exceeded → Stripe upgrade path |
+| **Billing** | Any billable LLM/vision call | Idempotent meter → quota check → 429/402 when exceeded |
 | **Match** | Search or chat | Semantic retrieve → ephemeral thread → mutual confirm |
 | **Dev** | Code + optional camera | Frustration signal; on demand CodePulse audit report |
 | **Lab** | Open Terra-X | Scenario lab for coordinates/variables |
@@ -173,7 +173,7 @@ You are the only required tenant in v1. Multi-tenant SaaS is optional later.
 | `web-signals` | [Browser-Use-Hackathon](https://github.com/NivedhN160/Browser-Use-Hackathon) | Buying-signal scanner tool |
 | `content-core` | [flyrank-internship](https://github.com/NivedhN160/flyrank-internship) | API spine: CRUD, Postgres, auth, queues, reports |
 | `leads` | [Flyrank-Backend-AI-Engineering-Capstone](https://github.com/NivedhN160/Flyrank-Backend-AI-Engineering-Capstone) | Widgets, rate limit, honeypot, geo, dashboard API |
-| `metering` | [LLM-Usage-Metering-Billing-Service-Flyrank-Capstone](https://github.com/NivedhN160/LLM-Usage-Metering-Billing-Service-Flyrank-Capstone) | Usage, quotas, micro-cents, Stripe webhooks |
+| `metering` | [LLM-Usage-Metering-Billing-Service-Flyrank-Capstone](https://github.com/NivedhN160/LLM-Usage-Metering-Billing-Service-Flyrank-Capstone) | Usage, quotas, micro-cents |
 | `social` | [Multi-Platform-Social-Campaign-Publisher-Flyrank-Capstone](https://github.com/NivedhN160/Multi-Platform-Social-Campaign-Publisher-Flyrank-Capstone) | Campaigns, encrypted tokens, scheduler, signed webhooks |
 | `images` | [AI-Image-Understanding-Content-Matching-Engine-Flyrank-Capstone](https://github.com/NivedhN160/AI-Image-Understanding-Content-Matching-Engine-Flyrank-Capstone) | Vision, embeddings, mismatch guard |
 | `match` | [MAT-CHA.AI](https://github.com/NivedhN160/MAT-CHA.AI) | Matchmaking + ephemeral chat |

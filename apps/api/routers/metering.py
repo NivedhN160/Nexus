@@ -9,7 +9,6 @@ from apps.api.models import MeteringEvent
 from packages.shared.auth import get_api_key
 from packages.shared.pricing import PricingHelpers
 import json
-import stripe
 
 router = APIRouter()
 protected_router = APIRouter(dependencies=[Depends(get_api_key)])
@@ -86,30 +85,5 @@ def get_usage(db: Session = Depends(get_db)):
         "events_count": events_count,
         "percentage_used": min(100.0, (total_spend / MONTHLY_QUOTA) * 100) if MONTHLY_QUOTA > 0 else 100.0
     }
-
-@router.post("/webhooks/stripe")
-async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
-    # Simplified Stripe Webhook
-    payload = await request.body()
-    sig_header = request.headers.get("Stripe-Signature")
-    webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
-    
-    try:
-        if webhook_secret:
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, webhook_secret
-            )
-        else:
-            # Fallback for local testing without verification
-            event = json.loads(payload)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-        
-    # Handle event type
-    if event['type'] == 'checkout.session.completed':
-        # E.g., upgrade plan / reset quota
-        pass
-        
-    return {"status": "success"}
 
 router.include_router(protected_router)
