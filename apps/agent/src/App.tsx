@@ -4,6 +4,7 @@ import {
   Send, Maximize2, Share2, Layers, Play
 } from 'lucide-react';
 import SocialGraph from './components/SocialGraph';
+import LeadStream from './components/LeadStream';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('agent');
@@ -129,7 +130,7 @@ export default function App() {
           </div>
         )}
         
-        {activeTab !== 'agent' && activeTab !== 'social' && (
+        {activeTab !== 'agent' && activeTab !== 'social' && activeTab !== 'leads' && (
           <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div className="glass-panel" style={{ padding: '48px', textAlign: 'center' }}>
               <Cpu size={48} className="text-teal" style={{ marginBottom: '16px', opacity: 0.5 }} />
@@ -140,6 +141,7 @@ export default function App() {
         )}
 
         {activeTab === 'social' && <SocialGraph />}
+        {activeTab === 'leads' && <LeadStream />}
       </main>
 
       {/* Right Context */}
