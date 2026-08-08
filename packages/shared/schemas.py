@@ -1,13 +1,12 @@
 from pydantic import BaseModel
-from typing import Optional, Any, Dict
+from typing import Any, Optional
 
-class ErrorSchema(BaseModel):
-    code: str
+class APIErrorResponse(BaseModel):
+    error: str
     message: str
-    details: Optional[Dict[str, Any]] = None
+    code: str
+    details: Optional[Any] = None
 
-class ToolResultSchema(BaseModel):
-    ok: bool
-    result: Optional[Any] = None
-    error: Optional[ErrorSchema] = None
-    latency_ms: int
+class APIResponse(BaseModel):
+    status: str = "success"
+    data: Optional[Any] = None

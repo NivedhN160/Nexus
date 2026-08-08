@@ -1,39 +1,30 @@
 import redis
 import os
-import json
-from functools import wraps
-from fastapi import Request, HTTPException, status
+from contextlib import contextmanager
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
-def idempotent(expire_seconds=86400):
-    def decorator(func):
-        @wraps(func)
-        async def wrapper(request: Request, *args, **kwargs):
-            idempotency_key = request.headers.get("Idempotency-Key")
-            if not idempotency_key:
-                # If no key is provided, just proceed
-                return await func(request, *args, **kwargs)
-                
-            redis_key = f"idempotency:{idempotency_key}"
-            
-            # Check if we already have a response
-            cached_response = redis_client.get(redis_key)
-            if cached_response:
-                return json.loads(cached_response)
-                
-            # Execute the function
-            response = await func(request, *args, **kwargs)
-            
-            # Store the response (assuming it's serializable to JSON/dict for FastAPI)
-            if hasattr(response, 'dict'):
-                response_data = response.dict()
-            else:
-                response_data = response
-                
-            redis_client.setex(redis_key, expire_seconds, json.dumps(response_data))
-            
-            return response
-        return wrapper
-    return decorator
+class IdempotencyConflictException(Exception):
+    pass
+
+@contextmanager
+def idempotency_lock(key: str, ttl_seconds: int = 3600):
+    """
+    Ensures that a block of code is only executed once for a given key within the TTL.
+    Used for webhooks and duplicated submissions.
+    """
+    lock_key = f"nexus:idemp:{key}"
+    
+    # Try to acquire the lock (SETNX)
+    acquired = redis_client.set(lock_key, "locked", nx=True, ex=ttl_seconds)
+    
+    if not acquired:
+        raise IdempotencyConflictException(f"Request with idempotency key {key} is already being processed or was processed recently.")
+    
+    try:
+        yield
+    except Exception:
+        # If the block fails, we release the lock so it can be retried
+        redis_client.delete(lock_key)
+        raise
