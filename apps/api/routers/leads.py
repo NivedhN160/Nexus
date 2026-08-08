@@ -86,17 +86,24 @@ async def submit_lead(widget_id: int, req: Request, sub: SubmissionCreate, db: S
     # 4. Geo fallback
     geo = "US" # Stub for geo lookup
     
-    # 5. Store
-    db_sub = Submission(
-        widget_id=widget_id,
-        name=sub.name,
-        email=sub.email,
-        message=sub.message,
-        geo=geo,
-        status="new"
-    )
-    db.add(db_sub)
-    db.commit()
+    # 5. Store (with idempotency)
+    from packages.shared.idempotency import idempotency_lock, IdempotencyConflictException
+    idemp_key = f"{client_ip}:{sub.email}"
+    
+    try:
+        with idempotency_lock(idemp_key, ttl_seconds=60):
+            db_sub = Submission(
+                widget_id=widget_id,
+                name=sub.name,
+                email=sub.email,
+                message=sub.message,
+                geo=geo,
+                status="new"
+            )
+            db.add(db_sub)
+            db.commit()
+    except IdempotencyConflictException:
+        raise HTTPException(status_code=409, detail="Duplicate submission detected.")
     
     return {"status": "success", "message": "Thank you for your submission."}
 

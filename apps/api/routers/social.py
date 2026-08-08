@@ -35,11 +35,17 @@ class CampaignResponse(BaseModel):
     class Config:
         from_attributes = True
 
+from packages.shared.schemas import APIErrorResponse
+
 @protected_router.post("", response_model=CampaignCreateResponse)
 def create_campaign(post_id: int, db: Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+        raise HTTPException(status_code=404, detail=APIErrorResponse(
+            error="Not Found",
+            message="The requested post could not be found.",
+            code="POST_NOT_FOUND"
+        ).model_dump())
         
     # Check if campaign already exists for this post
     existing = db.query(Campaign).filter(Campaign.post_id == post_id).first()
