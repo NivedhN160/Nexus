@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  agent:
+    build:
+      context: ./apps/agent
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_API_KEY=${NEXUS_API_KEY}
+    volumes:
+      - ./apps/agent:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
   api:
     build:
       context: .
