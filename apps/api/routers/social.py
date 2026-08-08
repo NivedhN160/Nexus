@@ -37,7 +37,7 @@ class CampaignResponse(BaseModel):
 
 from packages.shared.schemas import APIErrorResponse
 
-@protected_router.post("", response_model=CampaignCreateResponse)
+@protected_router.post("/", response_model=CampaignCreateResponse)
 def create_campaign(post_id: int, db: Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -105,7 +105,7 @@ def get_campaign(campaign_id: int, db: Session = Depends(get_db)):
         posts=posts
     )
 
-@protected_router.get("", response_model=List[CampaignResponse])
+@protected_router.get("/", response_model=List[CampaignResponse])
 def get_campaigns(db: Session = Depends(get_db)):
     campaigns = db.query(Campaign).order_by(Campaign.id.desc()).all()
     result = []
