@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Database, Server, Brain, Activity, RefreshCw } from 'lucide-react';
 
+interface LogEntry {
+  time: string;
+  level: string;
+  message: string;
+}
+
 export default function AuditHealth() {
-  const logs = [
-    { time: '10:42:01', level: 'INFO', message: 'Nexus Worker authenticated successfully.' },
-    { time: '10:41:15', level: 'WARN', message: 'Rate limit approaching for Groq LLM (82%).' },
-    { time: '10:35:09', level: 'INFO', message: 'Idempotency sweep complete. 4 stale keys removed.' },
-    { time: '10:20:00', level: 'ERROR', message: 'Webhook signature verification failed from IP 192.168.1.1' },
-    { time: '10:15:33', level: 'INFO', message: 'System startup sequence initiated.' },
-  ];
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLogs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/audit/logs`, {
+        headers: {
+          'X-API-Key': import.meta.env.VITE_API_KEY || 'nexus_dev_key'
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLogs(data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch logs', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '24px', padding: '24px' }}>
@@ -20,8 +44,8 @@ export default function AuditHealth() {
           </h2>
           <p className="text-muted" style={{ fontSize: '14px', marginTop: '4px' }}>System vitals and security logs</p>
         </div>
-        <button className="btn" style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <RefreshCw size={14} /> Refresh Logs
+        <button className="btn" style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={fetchLogs}>
+          <RefreshCw size={14} className={loading ? 'spinning' : ''} /> Refresh Logs
         </button>
       </div>
 
@@ -33,7 +57,7 @@ export default function AuditHealth() {
           <div>
             <div className="text-muted" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>PostgreSQL</div>
             <div style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-primary)', marginTop: '4px' }}>Connected</div>
-            <div className="mono text-teal" style={{ fontSize: '11px', marginTop: '4px' }}>Latency: 4ms</div>
+            <div className="mono text-teal" style={{ fontSize: '11px', marginTop: '4px' }}>Latency: &lt;10ms</div>
           </div>
         </div>
 
@@ -55,7 +79,7 @@ export default function AuditHealth() {
           <div>
             <div className="text-muted" style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Background Worker</div>
             <div style={{ fontSize: '16px', fontWeight: 500, color: 'var(--text-primary)', marginTop: '4px' }}>Running</div>
-            <div className="mono text-teal" style={{ fontSize: '11px', marginTop: '4px' }}>Active Jobs: 2</div>
+            <div className="mono text-teal" style={{ fontSize: '11px', marginTop: '4px' }}>Active Jobs: 0</div>
           </div>
         </div>
       </div>
@@ -66,6 +90,12 @@ export default function AuditHealth() {
           <h3 style={{ fontSize: '14px', fontWeight: 500 }}>System Event Log</h3>
         </div>
         <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto' }}>
+          {loading && logs.length === 0 && (
+            <div style={{ color: 'var(--text-secondary)' }}>Fetching logs...</div>
+          )}
+          {!loading && logs.length === 0 && (
+            <div style={{ color: 'var(--text-secondary)' }}>No recent logs.</div>
+          )}
           {logs.map((log, idx) => (
             <div key={idx} style={{ 
               display: 'flex', 
