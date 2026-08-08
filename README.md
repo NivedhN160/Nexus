@@ -4,7 +4,7 @@ Nexus is a personal AI operations platform. It provides a single-user agent shel
 
 ## How to Run Full Stack
 
-Nexus uses a unified monorepo structure, deploying all services via `docker-compose`.
+Nexus uses a unified monorepo structure, deploying all services (Frontend, API, Worker, Database, Cache) via a single `docker-compose` command.
 
 1. **Environment Variables**: Copy the example file and populate your keys.
    ```bash
@@ -14,7 +14,9 @@ Nexus uses a unified monorepo structure, deploying all services via `docker-comp
    ```bash
    docker-compose up --build -d
    ```
-   This will bring up the API gateway, background worker, PostgreSQL, and Redis.
+   This will bring up the API gateway, background worker, PostgreSQL, Redis, AND the Frontend Agent UI simultaneously.
+   - Frontend Agent UI: `http://localhost:5173`
+   - API Gateway Docs: `http://localhost:8000/docs`
 3. **Database Migration and Seeding**:
    ```bash
    # Run migrations
@@ -22,8 +24,6 @@ Nexus uses a unified monorepo structure, deploying all services via `docker-comp
    # Seed demo data if needed
    docker-compose exec api python scripts/seed.py
    ```
-4. **Agent UI**:
-   Navigate to the `apps/agent` directory, install dependencies, and run the development server (e.g., `npm install && npm run dev`).
 5. **Run Tests**:
    ```bash
    docker-compose exec api pytest
