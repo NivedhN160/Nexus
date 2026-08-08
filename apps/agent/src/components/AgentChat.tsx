@@ -4,6 +4,7 @@ import { Send } from 'lucide-react';
 interface Message {
   role: 'user' | 'assistant';
   text: string;
+  isApprovalRequest?: boolean;
 }
 
 export default function AgentChat() {
@@ -40,7 +41,14 @@ export default function AgentChat() {
       }
 
       const data = await response.json();
-      setChatHistory(prev => [...prev, { role: 'assistant', text: data.answer }]);
+      
+      const needsApproval = data.tool_cards?.some((card: any) => card.error?.code === 'NEEDS_APPROVAL');
+      
+      setChatHistory(prev => [...prev, { 
+        role: 'assistant', 
+        text: data.answer,
+        isApprovalRequest: needsApproval
+      }]);
       
     } catch (error) {
       console.error("Chat error:", error);
@@ -80,6 +88,12 @@ export default function AgentChat() {
               borderRight: msg.role === 'user' ? '2px solid var(--text-primary)' : '1px solid var(--border-color)'
             }}>
               <span className="mono" style={{ fontSize: '13px', lineHeight: '1.5' }}>{msg.text}</span>
+              {msg.isApprovalRequest && (
+                <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+                  <button className="btn" style={{ background: 'var(--accent-teal)', color: '#000', fontSize: '12px', padding: '6px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }} onClick={() => setInputText("Yes, I approve the execution of this tool.")}>Approve</button>
+                  <button className="btn" style={{ background: 'transparent', border: '1px solid var(--warning-amber)', color: 'var(--warning-amber)', fontSize: '12px', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer' }} onClick={() => setInputText("No, deny the execution of this tool.")}>Deny</button>
+                </div>
+              )}
             </div>
           </div>
         ))}

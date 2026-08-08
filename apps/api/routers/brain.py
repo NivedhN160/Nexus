@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 from packages.shared.auth import get_api_key
 from packages.shared.schemas import ToolResultSchema
+from sqlalchemy.orm import Session
+from apps.api.database import get_db
+from apps.api.models import Submission
 
 from groq import Groq
 
@@ -22,18 +25,23 @@ class BrainResponse(BaseModel):
     usage: Dict[str, int]
 
 # Basic Tool implementations
-def call_tool(name: str, args: Dict[str, Any]) -> ToolResultSchema:
+def call_tool(name: str, args: Dict[str, Any], db: Session) -> ToolResultSchema:
     start_time = time.time()
     result = None
     error = None
     ok = True
     
     try:
-        # Stub tool executions based on spec
-        if name == "web_agent.fetch":
-            result = {"title": "Example Page", "content": f"Fetched content for {args.get('url')}"}
-        elif name == "web_signals.scan":
-            result = {"signals": [{"company": c, "score": 8} for c in args.get("companies", [])]}
+        if name == "leads.get_recent":
+            subs = db.query(Submission).order_by(Submission.created_at.desc()).limit(5).all()
+            result = {"leads": [{"id": s.id, "name": s.name, "email": s.email, "message": s.message, "status": s.status} for s in subs]}
+        elif name == "audit.get_health":
+            result = {"status": "HEALTHY", "uptime": "72h", "active_modules": 6, "errors_last_24h": 0}
+        elif name == "system.execute_shell":
+            ok = False
+            error = {"code": "NEEDS_APPROVAL", "message": "Policy engine blocked shell execution. Ask user for permission."}
+        elif name == "memory.search":
+            result = {"status": "LOW_CONFIDENCE", "message": "No direct matches found. Please ask clarifying questions or rewrite query."}
         elif name == "climate.open":
             result = {"url": "http://localhost:3000/terra-x", "status": "launched"}
         else:
@@ -48,7 +56,7 @@ def call_tool(name: str, args: Dict[str, Any]) -> ToolResultSchema:
 
 
 @router.post("/chat", response_model=BrainResponse)
-def handle_message(req: BrainRequest):
+def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
     # Free-by-default architecture: Local models first
     llm_provider = os.getenv("LLM_PROVIDER", "local")
     cloud_enabled = os.getenv("NEXUS_CLOUD_LLM", "0") == "1"
@@ -74,32 +82,44 @@ def handle_message(req: BrainRequest):
         {
             "type": "function",
             "function": {
-                "name": "web_agent.fetch",
-                "description": "Fetch content from a URL",
+                "name": "leads.get_recent",
+                "description": "Fetch the most recent lead submissions from the portfolio widget",
+                "parameters": {"type": "object", "properties": {}}
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "audit.get_health",
+                "description": "Fetch system health and telemetry logs",
+                "parameters": {"type": "object", "properties": {}}
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "system.execute_shell",
+                "description": "DANGEROUS: Execute a shell command on the host machine",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "url": {"type": "string", "description": "The URL to fetch"}
+                        "command": {"type": "string", "description": "Command to run"}
                     },
-                    "required": ["url"]
+                    "required": ["command"]
                 }
             }
         },
         {
             "type": "function",
             "function": {
-                "name": "web_signals.scan",
-                "description": "Scan companies for buying signals",
+                "name": "memory.search",
+                "description": "Search the local Nexus memory bank",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "companies": {
-                            "type": "array", 
-                            "items": {"type": "string"},
-                            "description": "List of companies to scan"
-                        }
+                        "query": {"type": "string", "description": "Search term"}
                     },
-                    "required": ["companies"]
+                    "required": ["query"]
                 }
             }
         },
@@ -108,10 +128,7 @@ def handle_message(req: BrainRequest):
             "function": {
                 "name": "climate.open",
                 "description": "Open the Terra-X climate lab for scenarios",
-                "parameters": {
-                    "type": "object",
-                    "properties": {},
-                }
+                "parameters": {"type": "object", "properties": {}}
             }
         }
     ]
@@ -133,7 +150,7 @@ def handle_message(req: BrainRequest):
                 function_name = tool_call.function.name
                 function_args = json.loads(tool_call.function.arguments)
                 
-                tool_res = call_tool(function_name, function_args)
+                tool_res = call_tool(function_name, function_args, db)
                 tool_cards.append(tool_res)
                 
                 messages.append(response_message)
