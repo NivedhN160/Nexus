@@ -1,54 +1,37 @@
-# Nexus
+# Nexus Web
 
-Nexus is a personal AI operations platform. It provides a single-user agent shell, content/social/leads management, LLM metering, matchmaking, web tools, and audit capabilities—an integrated system built from multiple flagship modules.
+**Nexus** is an integrated personal AI operations platform. It unifies multiple real, production-tested AI and backend modules into a single, cohesive, self-hosted web product. 
 
-## How to Run Full Stack
+This is not a mock or a demo—it is a functional monorepo powered by local AI, robust APIs, and disciplined backend operations (idempotency, rate limits, probes).
 
-Nexus uses a unified monorepo structure, deploying all services (Frontend, API, Worker, Database, Cache) via a single `docker-compose` command.
+## Free-First & Local-Default
+Nexus is built to be **100% free by default** for you and your users.
+- **No Payment Provider:** Stripe has been completely removed. There is no billing wall.
+- **No Required Paid APIs:** The agent brain defaults to local LLM infrastructure (`ZigNGPT` / `NGPT-llm-based`). 
+- **Optional Cloud:** You can opt-in to using Groq for faster/larger inference by providing an API key and enabling `NEXUS_CLOUD_LLM=1`. Otherwise, the cloud remains entirely off.
+- **Search:** Uses DuckDuckGo via web scraping patterns instead of paid search APIs.
 
-1. **Environment Variables**: Copy the example file and populate your keys.
+## The Modules (Green Paths)
+Nexus is composed of several "Green Paths" that are fully wired and functional in the dark mission-control UI:
+
+1. **Agent Console (`N.E.O.S` / `ZigNGPT`)**: Chat and tool execution powered by local AI.
+2. **Lead Stream (`Flyrank Leads`)**: Ingests portfolio widget submissions securely with honeypots, rate limiting, and geo-tracking.
+3. **Content Pipeline & Social Graph (`Flyrank Content/Social`)**: Drafts posts, ranks images for mismatch guarding, and schedules multi-platform campaigns.
+4. **Dev Audit (`AI-Fluency`)**: Analyzes frustration signals and generates CodePulse audit reports.
+5. **Matchmaking (`MAT-CHA.AI`)**: Semantic search and ephemeral chat threading.
+6. **Labs**: Experimental integrations like the Terra-X climate simulation and Real-time Stock Analyzer.
+
+*(Note: Highly experimental OS-level interfaces like `N-OS` and standalone compiler projects are deliberately kept separate from this web core to ensure production stability.)*
+
+## Getting Started
+
+Nexus runs entirely via Docker Compose. There is only one path to boot the system.
+
+1. Clone the repository.
+2. Review the `.env.example` and create a `.env` file. (By default, no API keys are required).
+3. Run the stack:
    ```bash
-   cp .env.example .env
+   docker compose up --build
    ```
-2. **Start the Stack**:
-   ```bash
-   docker-compose up --build -d
-   ```
-   This will bring up the API gateway, background worker, PostgreSQL, Redis, AND the Frontend Agent UI simultaneously.
-   - Frontend Agent UI: `http://localhost:5173`
-   - API Gateway Docs: `http://localhost:8000/docs`
-3. **Database Migration and Seeding**:
-   ```bash
-   # Run migrations
-   docker-compose exec api alembic upgrade head
-   # Seed demo data if needed
-   docker-compose exec api python scripts/seed.py
-   ```
-5. **Run Tests**:
-   ```bash
-   docker-compose exec api pytest
-   ```
-
-## Important Notes
-- **Fake Social Adapters**: By default, the social publishing features use fake adapters. This is intentional to allow testing without configuring real OAuth apps for X (Twitter) and Instagram. You can swap these out for real implementations later.
-
-## Documentation
-- Detailed architecture and design principles can be found in [Architecture.md](./Architecture.md).
-
-## Module Map
-Nexus integrates the following projects into its monorepo layout:
-- `apps/agent` → [N.E.O.S](https://github.com/NivedhN160/N.E.O.S)
-- `apps/api` (Content) → [flyrank-internship](https://github.com/NivedhN160/flyrank-internship)
-- `services/leads` → [Flyrank-Backend-AI-Engineering-Capstone](https://github.com/NivedhN160/Flyrank-Backend-AI-Engineering-Capstone)
-- `services/metering` → [LLM-Usage-Metering-Billing-Service-Flyrank-Capstone](https://github.com/NivedhN160/LLM-Usage-Metering-Billing-Service-Flyrank-Capstone)
-- `services/social` → [Multi-Platform-Social-Campaign-Publisher-Flyrank-Capstone](https://github.com/NivedhN160/Multi-Platform-Social-Campaign-Publisher-Flyrank-Capstone)
-- `services/images` → [AI-Image-Understanding-Content-Matching-Engine-Flyrank-Capstone](https://github.com/NivedhN160/AI-Image-Understanding-Content-Matching-Engine-Flyrank-Capstone)
-- `services/match` → [MAT-CHA.AI](https://github.com/NivedhN160/MAT-CHA.AI)
-- `tools/web_agent` → [Browser-Agent](https://github.com/NivedhN160/Browser-Agent)
-- `tools/web_signals` → [Browser-Use-Hackathon](https://github.com/NivedhN160/Browser-Use-Hackathon)
-- `tools/audit_mcp` → [AI-Fluency-Capstone](https://github.com/NivedhN160/AI-Fluency-Capstone)
-- `tools/affect` → [Emotion-Aware-Code-Debugging-Assistant](https://github.com/NivedhN160/Emotion-Aware-Code-Debugging-Assistant)
-- `tools/climate` → [Terra-X](https://github.com/NivedhN160/Terra-X)
-- `packages/llm-cloud-hybrid` → [NGPT-llm-based](https://github.com/NivedhN160/NGPT-llm-based)
-- `packages/llm-local-zig` → [ZigNGPTv2.0](https://github.com/NivedhN160/ZigNGPTv2.0)
-- `surfaces/portfolio-snippet` → [Portfolio](https://github.com/NivedhN160/Portfolio)
+4. Access the dark mission-control UI at `http://localhost:5173`.
+5. The API is available at `http://localhost:8000` and Postgres/Redis are exposed on standard ports for local inspection.

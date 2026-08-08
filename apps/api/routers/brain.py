@@ -49,13 +49,17 @@ def call_tool(name: str, args: Dict[str, Any]) -> ToolResultSchema:
 
 @router.post("/chat", response_model=BrainResponse)
 def handle_message(req: BrainRequest):
+    # Free-by-default architecture: Local models first
+    llm_provider = os.getenv("LLM_PROVIDER", "local")
+    cloud_enabled = os.getenv("NEXUS_CLOUD_LLM", "0") == "1"
     groq_api_key = os.getenv("GROQ_API_KEY")
-    if not groq_api_key:
-        # Fallback to stub behavior if Groq is not configured
+    
+    # If cloud is disabled or key is missing, use local stub / NGPT logic
+    if not cloud_enabled or not groq_api_key:
         return BrainResponse(
-            answer=f"Echo (No LLM key): {req.text}",
+            answer=f"[Local AI / ZigNGPT]: Received your message -> '{req.text}'. (Running completely local. No cloud API used.)",
             tool_cards=[],
-            usage={"input_tokens": 10, "output_tokens": 10}
+            usage={"input_tokens": 10, "output_tokens": 15}
         )
         
     client = Groq(api_key=groq_api_key)

@@ -6,27 +6,10 @@ import {
 import SocialGraph from './components/SocialGraph';
 import LeadStream from './components/LeadStream';
 import AuditHealth from './components/AuditHealth';
+import AgentChat from './components/AgentChat';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('agent');
-  const [inputText, setInputText] = useState('');
-  const [chatHistory, setChatHistory] = useState([
-    { role: 'assistant', text: 'Nexus Agent initialized. Standing by for command.' }
-  ]);
-
-  const handleSend = () => {
-    if (!inputText.trim()) return;
-    setChatHistory([...chatHistory, { role: 'user', text: inputText }]);
-    setInputText('');
-    
-    // Stub response
-    setTimeout(() => {
-      setChatHistory(prev => [...prev, { 
-        role: 'assistant', 
-        text: 'Processing request. Connecting to backend services...' 
-      }]);
-    }, 500);
-  };
 
   return (
     <div className="nexus-layout">
@@ -47,9 +30,12 @@ export default function App() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {[
             { id: 'agent', icon: Terminal, label: 'Agent Console' },
+            { id: 'content', icon: Layers, label: 'Content Pipeline' },
             { id: 'social', icon: Share2, label: 'Social Graph' },
             { id: 'leads', icon: Layers, label: 'Lead Stream' },
-            { id: 'audit', icon: ShieldAlert, label: 'Audit / Health' }
+            { id: 'match', icon: Activity, label: 'Matchmaking' },
+            { id: 'audit', icon: ShieldAlert, label: 'Dev Audit' },
+            { id: 'labs', icon: Cpu, label: 'Labs (Terra-X)' }
           ].map(item => (
             <div 
               key={item.id}
@@ -76,59 +62,7 @@ export default function App() {
       {/* Main Stage */}
       <main className="main-stage">
         {activeTab === 'agent' && (
-          <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ flex: 1, overflowY: 'auto', marginBottom: '24px', paddingRight: '12px' }}>
-              {chatHistory.map((msg, idx) => (
-                <div key={idx} style={{ 
-                  marginBottom: '16px', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start' 
-                }}>
-                  <div style={{
-                    fontSize: '12px',
-                    color: 'var(--text-secondary)',
-                    marginBottom: '4px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px'
-                  }}>
-                    {msg.role === 'user' ? 'Operator' : 'Nexus'}
-                  </div>
-                  <div className="glass-panel" style={{
-                    padding: '12px 16px',
-                    maxWidth: '80%',
-                    background: msg.role === 'user' ? 'rgba(0, 240, 255, 0.05)' : 'var(--glass-bg)',
-                    borderLeft: msg.role === 'assistant' ? '2px solid var(--accent-teal)' : '1px solid var(--border-color)',
-                    borderRight: msg.role === 'user' ? '2px solid var(--text-primary)' : '1px solid var(--border-color)'
-                  }}>
-                    <span className="mono" style={{ fontSize: '13px', lineHeight: '1.5' }}>{msg.text}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', padding: '12px' }}>
-              <input 
-                type="text" 
-                value={inputText}
-                onChange={e => setInputText(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSend()}
-                placeholder="Enter command..." 
-                className="mono"
-                style={{ 
-                  flex: 1, 
-                  background: 'transparent', 
-                  border: 'none', 
-                  color: 'var(--text-primary)', 
-                  outline: 'none',
-                  fontSize: '14px'
-                }} 
-              />
-              <button className="btn" onClick={handleSend} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Send size={16} /> Execute
-              </button>
-            </div>
-          </div>
+          <AgentChat />
         )}
         
         {activeTab !== 'agent' && activeTab !== 'social' && activeTab !== 'leads' && activeTab !== 'audit' && (
