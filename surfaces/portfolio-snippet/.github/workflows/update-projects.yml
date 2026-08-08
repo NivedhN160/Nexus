@@ -1,0 +1,39 @@
+name: Update Projects JSON
+
+on:
+  schedule:
+    # Run at 00:00 every day
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-projects:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run fetch_projects script
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          python fetch_projects.py
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add projects.json
+          git commit -m "Auto-update projects.json [skip ci]" || echo "No changes to commit"
+          git push

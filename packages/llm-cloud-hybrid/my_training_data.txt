@@ -1,0 +1,5 @@
+<question> What is recursion? </question>
+<answer> Recursion is a technique where a function calls itself to solve smaller instances of a problem. </answer>
+
+<question> Explain polymorphism. </question>
+<answer> Polymorphism allows objects of different types to be treated as instances of the same class through method overriding. </answer>

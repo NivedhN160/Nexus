@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Ignore databases and state
+logs/
+chroma_db/
+neos_memory.db
+temp_audio.wav
+
+# Ignore large models
+*.gguf
+*.bin
+
+# Ignore git and ide files
+.git/
+.github/
+.vscode/
+
+# Ignore assets and tests (not needed for prod container)
+assets/
+tests/

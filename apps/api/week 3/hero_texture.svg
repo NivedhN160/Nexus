@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300" viewBox="0 0 800 300" fill="none">
+  <rect width="800" height="300" fill="#0F172A"/>
+  <path d="M0 150Q200 50 400 150T800 150" stroke="#3B82F6" stroke-width="2" stroke-dasharray="4 4" opacity="0.4"/>
+  <circle cx="400" cy="150" r="6" fill="#3B82F6"/>
+  <text x="400" y="210" text-anchor="middle" fill="#F8FAFC" font-family="system-ui" font-size="18" font-weight="600">Backend Engineering &amp; System Persistence</text>
+</svg>

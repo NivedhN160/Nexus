@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivedh - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="crt-overlay"></div>
+    <div id="desktop">
+        <!-- Desktop Icons -->
+        <div class="desktop-icon" id="icon-my-computer" ondblclick="openWindow('my-computer')">
+            <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png" alt="My Computer">
+            <span>My Computer</span>
+        </div>
+        
+        <div class="desktop-icon" id="icon-projects" ondblclick="openWindow('projects')">
+            <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png" alt="Projects">
+            <span>Projects</span>
+        </div>
+        
+        <div class="desktop-icon" id="icon-recycle" ondblclick="openWindow('recycle-bin')">
+            <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-4.png" alt="Recycle Bin">
+            <span>Recycle Bin</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-resume" ondblclick="openWindow('resume')">
+            <img src="https://win98icons.alexmeub.com/icons/png/notepad_file-0.png" alt="Resume.txt">
+            <span>Resume.txt</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-linkedin" ondblclick="window.open('https://www.linkedin.com/in/nivedhn160/', '_blank')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn">
+            <span>LinkedIn</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-github" ondblclick="window.open('https://github.com/NivedhN160', '_blank')">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+            <span>GitHub</span>
+        </div>
+
+        <div class="desktop-icon" id="icon-huggingface" ondblclick="window.open('https://huggingface.co/NivedhN160', '_blank')">
+            <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="HuggingFace">
+            <span>HuggingFace</span>
+        </div>
+    </div>
+
+    <!-- Start Menu -->
+    <div id="start-menu" class="hidden">
+        <div class="start-menu-banner">
+            <img src="https://win98icons.alexmeub.com/icons/png/user_computer-0.png" alt="User">
+            <span>Nivedh</span>
+        </div>
+        <div class="start-menu-items">
+            <div class="start-item" onclick="openWindow('projects'); toggleStartMenu()">
+                <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png" alt="Projects">
+                <div class="start-item-text">
+                    <strong>Projects</strong>
+                    <span>My GitHub Repos</span>
+                </div>
+            </div>
+            <div class="start-item" onclick="openWindow('resume'); toggleStartMenu()">
+                <img src="https://win98icons.alexmeub.com/icons/png/notepad_file-0.png" alt="Resume">
+                <div class="start-item-text">
+                    <strong>Resume</strong>
+                    <span>View Resume</span>
+                </div>
+            </div>
+            <div class="start-separator"></div>
+            <div class="start-item" onclick="window.open('https://github.com/NivedhN160', '_blank'); toggleStartMenu()">
+                <img src="https://win98icons.alexmeub.com/icons/png/msie1-1.png" alt="GitHub">
+                <div class="start-item-text">
+                    <strong>GitHub</strong>
+                    <span>Open in Browser</span>
+                </div>
+            </div>
+        </div>
+        <div class="start-menu-bottom">
+            <div class="start-item" onclick="shutdown()">
+                <img src="https://win98icons.alexmeub.com/icons/png/shut_down_cool-0.png" alt="Turn Off">
+                <span>Turn Off Computer</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+        <div id="start-button" onclick="toggleStartMenu()">
+            <img src="https://win98icons.alexmeub.com/icons/png/windows-0.png" alt="Windows Logo" class="win-logo">
+            <span>Start</span>
+        </div>
+        <div id="taskbar-tasks"></div>
+        <div id="taskbar-tray">
+            <span id="clock">12:00 PM</span>
+        </div>
+    </div>
+
+    <!-- Window Template (Hidden) -->
+    <template id="window-template">
+        <div class="window" style="display: none;">
+            <div class="title-bar">
+                <div class="title-bar-text">
+                    <img class="title-icon" src="" alt="icon">
+                    <span class="title-name">Window</span>
+                </div>
+                <div class="title-bar-controls">
+                    <button aria-label="Minimize" class="btn-minimize"></button>
+                    <button aria-label="Maximize" class="btn-maximize"></button>
+                    <button aria-label="Close" class="btn-close"></button>
+                </div>
+            </div>
+            <div class="window-content"></div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+</html>

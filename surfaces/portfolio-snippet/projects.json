@@ -1,0 +1,366 @@
+{
+  "generated_at": "2026-08-08T00:36:28.387544+00:00",
+  "featured": "AI-Fluency-Capstone",
+  "projects": [
+    {
+      "name": "AI-Fluency-Capstone",
+      "description": "CodePulse \u2014 MCP-powered DevOps audit agent that checks secret isolation, runs test suites, inspects scraper politeness, and writes Markdown audit reports.",
+      "url": "https://github.com/NivedhN160/AI-Fluency-Capstone",
+      "language": "HTML",
+      "score": 100,
+      "last_updated": "2026-08-06T13:44:48Z",
+      "homepage": ""
+    },
+    {
+      "name": "AI-Image-Understanding-Content-Matching-Engine-Flyrank-Capstone",
+      "description": "AI image understanding & content matching \u2014 Vision metadata, semantic embeddings, mismatch guard, and article-to-image ranking with cost tracking.",
+      "url": "https://github.com/NivedhN160/AI-Image-Understanding-Content-Matching-Engine-Flyrank-Capstone",
+      "language": "Python",
+      "score": 100,
+      "last_updated": "2026-08-07T15:18:32Z",
+      "homepage": ""
+    },
+    {
+      "name": "Browser-Use-Hackathon",
+      "description": "Buying-signal scanner \u2014 turns Greenhouse/Lever job postings into ranked GTM intent scores via dual-path API + browser automation and Groq.",
+      "url": "https://github.com/NivedhN160/Browser-Use-Hackathon",
+      "language": "JavaScript",
+      "score": 100,
+      "last_updated": "2026-07-18T09:14:35Z",
+      "homepage": ""
+    },
+    {
+      "name": "Flyrank-Backend-AI-Engineering-Capstone",
+      "description": "Embeddable lead-capture widget platform \u2014 multi-tenant widgets, rate limiting, honeypot spam filter, geo enrichment fallback, and dashboard API with pytest acceptance probes.",
+      "url": "https://github.com/NivedhN160/Flyrank-Backend-AI-Engineering-Capstone",
+      "language": "Python",
+      "score": 100,
+      "last_updated": "2026-08-06T15:03:06Z",
+      "homepage": ""
+    },
+    {
+      "name": "LLM-Usage-Metering-Billing-Service-Flyrank-Capstone",
+      "description": "LLM usage metering & billing service \u2014 idempotent metering, quota enforcement (429/402), integer micro-cent pricing, and signature-verified Stripe webhooks.",
+      "url": "https://github.com/NivedhN160/LLM-Usage-Metering-Billing-Service-Flyrank-Capstone",
+      "language": "Python",
+      "score": 100,
+      "last_updated": "2026-08-07T15:34:05Z",
+      "homepage": ""
+    },
+    {
+      "name": "Multi-Platform-Social-Campaign-Publisher-Flyrank-Capstone",
+      "description": "Multi-platform social campaign publisher \u2014 turns blog posts into scheduled Instagram/X campaigns with idempotent delivery, AES-256-GCM token storage, 429 backoff, and signed webhooks.",
+      "url": "https://github.com/NivedhN160/Multi-Platform-Social-Campaign-Publisher-Flyrank-Capstone",
+      "language": "Python",
+      "score": 100,
+      "last_updated": "2026-08-07T16:15:15Z",
+      "homepage": ""
+    },
+    {
+      "name": "N.E.O.S",
+      "description": "Autonomous AI orchestrator with 3D holographic UI, seamless VAD voice interface, persistent memory, and lightning-fast Groq API tool execution.",
+      "url": "https://github.com/NivedhN160/N.E.O.S",
+      "language": "Python",
+      "score": 100,
+      "last_updated": "2026-08-03T14:31:09Z",
+      "homepage": ""
+    },
+    {
+      "name": "Hacknight-blr-elastic-aws",
+      "description": "Civic Twin \u2014 agentic Bangalore digital assistant using AWS Bedrock, Elasticsearch, MCP tools, and family-delegation for civic complaints.",
+      "url": "https://github.com/NivedhN160/Hacknight-blr-elastic-aws",
+      "language": "JavaScript",
+      "score": 91,
+      "last_updated": "2026-08-05T16:30:42Z",
+      "homepage": ""
+    },
+    {
+      "name": "Terra-X",
+      "description": "AI climate & socio-economic scenario lab \u2014 interactive 3D Earth, live weather grounding, and Groq Llama projections for any coordinate.",
+      "url": "https://github.com/NivedhN160/Terra-X",
+      "language": "JavaScript",
+      "score": 90,
+      "last_updated": "2026-02-19T04:47:21Z",
+      "homepage": ""
+    },
+    {
+      "name": "ZigNGPTv2.0",
+      "description": "Offline AI assistant in pure Zig \u2014 custom autograd engine + Transformer from scratch, with Markov fallback, mood system, and local training.",
+      "url": "https://github.com/NivedhN160/ZigNGPTv2.0",
+      "language": "Zig",
+      "score": 90,
+      "last_updated": "2026-06-24T16:30:00Z",
+      "homepage": ""
+    },
+    {
+      "name": "Emotion-Aware-Code-Debugging-Assistant",
+      "description": "Real-time computer vision system that monitors facial cues, blink rate, head pose, and emotion to estimate developer frustration and trigger debugging interventions.",
+      "url": "https://github.com/NivedhN160/Emotion-Aware-Code-Debugging-Assistant",
+      "language": "Python",
+      "score": 88,
+      "last_updated": "2026-08-05T16:30:25Z",
+      "homepage": ""
+    },
+    {
+      "name": "promptwars",
+      "description": "",
+      "url": "https://github.com/NivedhN160/promptwars",
+      "language": "HTML",
+      "score": 75,
+      "last_updated": "2026-06-21T15:51:00Z",
+      "homepage": ""
+    },
+    {
+      "name": "BuildwithAIchallenge4",
+      "description": "Flow26 \u2014 FIFA 2026 stadium ops dashboard with multi-role UI, multilingual Groq AI, TTS/STT accessibility, and Vitest coverage.",
+      "url": "https://github.com/NivedhN160/BuildwithAIchallenge4",
+      "language": "TypeScript",
+      "score": 70,
+      "last_updated": "2026-07-13T14:41:37Z",
+      "homepage": ""
+    },
+    {
+      "name": "ZigNGPT",
+      "description": "Ultra-lightweight offline AI chat in Zig using trigram/Markov models, dynamic moods, and DuckDuckGo search \u2014 zero heavy dependencies.",
+      "url": "https://github.com/NivedhN160/ZigNGPT",
+      "language": "Zig",
+      "score": 70,
+      "last_updated": "2026-03-08T16:20:28Z",
+      "homepage": ""
+    },
+    {
+      "name": "Helicopter-Game-Using-ALLEGRO-5",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Helicopter-Game-Using-ALLEGRO-5",
+      "language": "C++",
+      "score": 63,
+      "last_updated": "2025-08-25T07:21:57Z",
+      "homepage": ""
+    },
+    {
+      "name": "HelicopterGame-with-helicopter-drawn-using-Allegro5",
+      "description": "",
+      "url": "https://github.com/NivedhN160/HelicopterGame-with-helicopter-drawn-using-Allegro5",
+      "language": "C++",
+      "score": 63,
+      "last_updated": "2025-06-18T15:49:04Z",
+      "homepage": ""
+    },
+    {
+      "name": "N-OS",
+      "description": "32-bit bare-metal OS written in C \u2014 paging, preemptive multitasking, ATA/FAT32 VFS, TCP/IP stack, PE & ELF loaders, and a Win32 compatibility layer.",
+      "url": "https://github.com/NivedhN160/N-OS",
+      "language": "C",
+      "score": 56,
+      "last_updated": "2026-07-15T15:39:32Z",
+      "homepage": ""
+    },
+    {
+      "name": "MAT-CHA.AI",
+      "description": "MAT-CHA.AI \u2014 AI matchmaking for startups & creators: semantic vibe search, ephemeral chat, mutual deal confirm, FastAPI + React + MongoDB + ChromaDB.",
+      "url": "https://github.com/NivedhN160/MAT-CHA.AI",
+      "language": "Python",
+      "score": 43,
+      "last_updated": "2026-03-28T08:36:13Z",
+      "homepage": "https://jarvis-runtime.vercel.app"
+    },
+    {
+      "name": "NGPT-llm-based",
+      "description": "Hybrid chatbot using LLaMA 2 + GPT-Neo with retrieval QA, DuckDuckGo web search, voice input/output, and a FastAPI + web GUI interface.",
+      "url": "https://github.com/NivedhN160/NGPT-llm-based",
+      "language": "Python",
+      "score": 40,
+      "last_updated": "2025-09-12T13:43:58Z",
+      "homepage": ""
+    },
+    {
+      "name": "NivedhN160",
+      "description": "",
+      "url": "https://github.com/NivedhN160/NivedhN160",
+      "language": "Python",
+      "score": 20,
+      "last_updated": "2026-07-28T16:02:28Z",
+      "homepage": ""
+    },
+    {
+      "name": "customer-accounts",
+      "description": "",
+      "url": "https://github.com/NivedhN160/customer-accounts",
+      "language": "Python",
+      "score": 10,
+      "last_updated": "2026-07-28T17:40:54Z",
+      "homepage": ""
+    },
+    {
+      "name": "Accessible-Form",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Accessible-Form",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-04-07T02:23:13Z",
+      "homepage": ""
+    },
+    {
+      "name": "Advanced-Java-Lab-Programs",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Advanced-Java-Lab-Programs",
+      "language": "Java",
+      "score": 0,
+      "last_updated": "2026-08-05T16:11:17Z",
+      "homepage": ""
+    },
+    {
+      "name": "Advanced-Python-Programs",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Advanced-Python-Programs",
+      "language": "Python",
+      "score": 0,
+      "last_updated": "2026-08-06T13:02:56Z",
+      "homepage": ""
+    },
+    {
+      "name": "AI-Agent-Builder-Series",
+      "description": "",
+      "url": "https://github.com/NivedhN160/AI-Agent-Builder-Series",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-08-05T16:09:03Z",
+      "homepage": ""
+    },
+    {
+      "name": "AIML-Lab",
+      "description": "",
+      "url": "https://github.com/NivedhN160/AIML-Lab",
+      "language": "Python",
+      "score": 0,
+      "last_updated": "2026-08-05T15:47:43Z",
+      "homepage": ""
+    },
+    {
+      "name": "Algorithms-In-Python-And-Cpp",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Algorithms-In-Python-And-Cpp",
+      "language": "Python",
+      "score": 0,
+      "last_updated": "2026-08-05T16:30:03Z",
+      "homepage": ""
+    },
+    {
+      "name": "Auth-token-demo",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Auth-token-demo",
+      "language": "CSS",
+      "score": 0,
+      "last_updated": "2026-04-07T02:06:27Z",
+      "homepage": ""
+    },
+    {
+      "name": "Browser-Agent",
+      "description": "Browser automation agent with structured src/tests layout for web interaction and evaluation workflows.",
+      "url": "https://github.com/NivedhN160/Browser-Agent",
+      "language": "Python",
+      "score": 0,
+      "last_updated": "2026-08-05T16:29:36Z",
+      "homepage": ""
+    },
+    {
+      "name": "Compiler-Construction",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Compiler-Construction",
+      "language": "C",
+      "score": 0,
+      "last_updated": "2026-03-26T06:21:40Z",
+      "homepage": ""
+    },
+    {
+      "name": "e-commerce-card",
+      "description": "",
+      "url": "https://github.com/NivedhN160/e-commerce-card",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-08-05T16:33:27Z",
+      "homepage": ""
+    },
+    {
+      "name": "flyrank-internship",
+      "description": "FlyRank AI internship \u2014 weekly backend progression (FastAPI, Postgres, Docker, auth, job queues, reports) across weeks 1\u20139 with staged commits.",
+      "url": "https://github.com/NivedhN160/flyrank-internship",
+      "language": "HTML",
+      "score": 0,
+      "last_updated": "2026-08-07T16:48:00Z",
+      "homepage": ""
+    },
+    {
+      "name": "FSD-Module-2",
+      "description": "",
+      "url": "https://github.com/NivedhN160/FSD-Module-2",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-02-24T04:44:11Z",
+      "homepage": ""
+    },
+    {
+      "name": "Jarvis-Runtime-2",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Jarvis-Runtime-2",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-02-14T05:54:33Z",
+      "homepage": ""
+    },
+    {
+      "name": "Neon-cube-ThreeJS",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Neon-cube-ThreeJS",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-04-07T03:14:54Z",
+      "homepage": ""
+    },
+    {
+      "name": "Portfolio",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Portfolio",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-08-07T01:54:10Z",
+      "homepage": ""
+    },
+    {
+      "name": "pwa-Ecommerce-Alerts",
+      "description": "",
+      "url": "https://github.com/NivedhN160/pwa-Ecommerce-Alerts",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-03-11T07:07:27Z",
+      "homepage": ""
+    },
+    {
+      "name": "ransomware-assessment-system",
+      "description": "",
+      "url": "https://github.com/NivedhN160/ransomware-assessment-system",
+      "language": "HTML",
+      "score": 0,
+      "last_updated": "2026-03-24T14:49:14Z",
+      "homepage": ""
+    },
+    {
+      "name": "Video-Analyzer-and-camera-angle",
+      "description": "",
+      "url": "https://github.com/NivedhN160/Video-Analyzer-and-camera-angle",
+      "language": "Unknown",
+      "score": 0,
+      "last_updated": "2026-03-08T16:22:42Z",
+      "homepage": ""
+    },
+    {
+      "name": "VitePWA",
+      "description": "",
+      "url": "https://github.com/NivedhN160/VitePWA",
+      "language": "JavaScript",
+      "score": 0,
+      "last_updated": "2026-03-17T03:01:08Z",
+      "homepage": ""
+    }
+  ]
+}

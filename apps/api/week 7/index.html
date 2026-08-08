@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nivedh — Systems & Backend Engineering Portfolio</title>
+  <meta name="description" content="Personal engineering portfolio of Nivedh. Building resilient software from bare-metal C kernels to Dockerized FastAPI backends, background job queues, and automated PDF report generators.">
+  <meta name="author" content="Nivedh">
+
+  <!-- SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M20 44V20L36 36V20H44V44L28 28V44H20Z' fill='%233B82F6'/></svg>">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nivedh-portfolio.netlify.app/">
+  <meta property="og:title" content="Nivedh — Systems & Backend Engineering Portfolio">
+  <meta property="og:description" content="Building resilient software from bare-metal C kernels to Dockerized FastAPI backends, background job queues, and automated PDF report generators.">
+  <meta property="og:image" content="https://nivedh-portfolio.netlify.app/og-preview.png">
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://nivedh-portfolio.netlify.app/">
+  <meta name="twitter:title" content="Nivedh — Systems & Backend Engineering Portfolio">
+  <meta name="twitter:description" content="Building resilient software from bare-metal C kernels to Dockerized FastAPI backends, background job queues, and automated PDF report generators.">
+  <meta name="twitter:image" content="https://nivedh-portfolio.netlify.app/og-preview.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-color: #0F172A;
+      --accent-color: #2563EB; /* High-contrast blue WCAG AA */
+      --muted-color: #475569; /* WCAG AA accessible contrast on white */
+      --border-color: #CBD5E1;
+      --font-heading: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      font-size: 1rem;
+      -webkit-font-smoothing: antialiased;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(248, 250, 252, 0.95);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-color);
+      min-height: 44px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-logo svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-name {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      color: var(--muted-color);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-link:hover, .nav-link:focus-visible {
+      color: var(--accent-color);
+      background-color: #EFF6FF;
+      outline: 2px solid var(--accent-color);
+    }
+
+    .hero {
+      padding: 48px 0 40px;
+      text-align: left;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #EFF6FF;
+      color: var(--accent-color);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+      border: 1px solid #BFDBFE;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      color: var(--text-color);
+    }
+
+    .tagline {
+      font-size: 1.15rem;
+      color: var(--muted-color);
+      max-width: 720px;
+      margin-bottom: 28px;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      padding: 14px 24px;
+      min-height: 48px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover, .btn-primary:focus-visible {
+      background-color: #1D4ED8;
+      transform: translateY(-1px);
+      outline: 2px solid #1D4ED8;
+    }
+
+    .btn-secondary {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      text-decoration: none;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      padding: 14px 24px;
+      min-height: 48px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-color);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-secondary:hover, .btn-secondary:focus-visible {
+      background-color: #F1F5F9;
+      border-color: var(--accent-color);
+      outline: 2px solid var(--accent-color);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 60px;
+    }
+
+    .case-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .case-card:hover {
+      border-color: var(--accent-color);
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .case-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-color);
+    }
+
+    .tech-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      background-color: #F1F5F9;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #E2E8F0;
+    }
+
+    .case-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .case-desc {
+      font-size: 0.95rem;
+      color: var(--muted-color);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .case-link {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+    }
+
+    .case-link:hover, .case-link:focus-visible {
+      text-decoration: underline;
+      outline: 2px solid var(--accent-color);
+    }
+
+    /* Working Contact Form Styling (Netlify Forms Backend) */
+    .contact-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 60px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--text-color);
+      background-color: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    /* FlyRank Graduate Badge Styling */
+    .flyrank-badge-container {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .flyrank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #0F172A, #1E293B);
+      color: #FFFFFF;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .flyrank-badge:hover, .flyrank-badge:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--accent-color);
+      outline: 2px solid var(--accent-color);
+    }
+
+    .badge-icon {
+      color: #F59E0B;
+      font-size: 1.1rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 32px 0;
+      color: var(--muted-color);
+      font-size: 0.9rem;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 1.85rem;
+      }
+      .tagline {
+        font-size: 1.05rem;
+      }
+      .hero {
+        padding: 32px 0 28px;
+      }
+      .cta-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-primary, .btn-secondary {
+        width: 100%;
+      }
+      .nav-links {
+        gap: 8px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .contact-section {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-content">
+      <a href="/" class="brand" aria-label="Nivedh Portfolio Homepage">
+        <div class="brand-logo">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 44V20L36 36V20H44V44L28 28V44H20Z" fill="#3B82F6"/>
+          </svg>
+        </div>
+        <span class="brand-name">Nivedh</span>
+      </a>
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="https://github.com/NivedhN160" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub Profile">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/nivedhn160/" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="LinkedIn Profile">LinkedIn ↗</a>
+        <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%201/Proof_Statement.md" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="CV Proof Statement">CV / Proof ↗</a>
+        <a href="#contact-form-section" class="nav-link" aria-label="Contact Form">Contact Form ✉</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="badge">General AI Fluency & Backend AI Engineering Track</div>
+      <h1>Nivedh — Systems & Backend Engineer</h1>
+      <p class="tagline">I build resilient, production-ready software from bare-metal C kernels to Dockerized FastAPI backends, background job queues, and automated PDF report generators.</p>
+      
+      <div class="cta-group">
+        <a href="https://github.com/NivedhN160/flyrank-internship" target="_blank" rel="noopener noreferrer" class="btn-primary" aria-label="Inspect Code on GitHub">
+          Inspect Code & Artifacts on GitHub ➔
+        </a>
+        <a href="#contact-form-section" class="btn-secondary" aria-label="Get in Touch via Form">
+          Send a Message Below ✉
+        </a>
+      </div>
+    </section>
+
+    <!-- Verified Engineering Case Studies Grid -->
+    <section>
+      <h2 class="section-title">Verified Engineering Case Studies</h2>
+      
+      <div class="case-grid">
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 7 · BE-07</span>
+            <span class="tech-pill">ReportLab / FastAPI</span>
+          </div>
+          <h3 class="case-title">Automated PDF Report Generator</h3>
+          <p class="case-desc">Built a PDF report generation pipeline with ReportLab, data aggregation, HTTP 202 background rendering, and binary PDF download endpoints.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%207/README.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 7 PDF Report Spec">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 6 · BE-06</span>
+            <span class="tech-pill">Async Worker / 202</span>
+          </div>
+          <h3 class="case-title">Async Background Job Queue Architecture</h3>
+          <p class="case-desc">Implemented HTTP 202 Accepted fast-response pattern, background worker queue, idempotency key mapping, retries with backoff, and failure alert logging.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%206/README.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 6 Background Job Spec">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 5 · BE-04</span>
+            <span class="tech-pill">BeautifulSoup / Pydantic</span>
+          </div>
+          <h3 class="case-title">The Polite Web Scraper & RAG Corpus</h3>
+          <p class="case-desc">Built a polite data scraper in Python with robots.txt compliance, custom User-Agent header, 1.5s rate-limiting delay, BeautifulSoup HTML extraction, and Pydantic JSON/CSV export.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%205/README.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 5 Web Scraper Spec">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 4 · BE-03</span>
+            <span class="tech-pill">Supabase Auth / JWT</span>
+          </div>
+          <h3 class="case-title">Auth Login & Bearer JWT Protect</h3>
+          <p class="case-desc">Integrated Supabase Auth as Identity Provider (IdP), implemented FastAPI reusable HTTPBearer dependencies, and secured endpoints with 401 token verification.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%204/README.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 4 Supabase Auth Spec">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 3 · BE-02</span>
+            <span class="tech-pill">Postgres / Docker</span>
+          </div>
+          <h3 class="case-title">Postgres in Docker & Repository Pattern</h3>
+          <p class="case-desc">Decoupled data storage using the Repository Pattern in Python. Swapped SQLite for PostgreSQL in Docker Compose with zero changes to API routes.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%203/README.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 3 Postgres Docker Spec">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 2 · BE-01</span>
+            <span class="tech-pill">FastAPI / Swagger</span>
+          </div>
+          <h3 class="case-title">FastAPI Task CRUD REST API</h3>
+          <p class="case-desc">Built a lightweight REST API with 9 endpoints, HTTP status code enforcement, query filtering, stats calculation, and interactive Swagger UI docs.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%202/README.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 2 FastAPI Task API Spec">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-header">
+            <span class="case-tag">Week 1 · Systems</span>
+            <span class="tech-pill">C / Assembly</span>
+          </div>
+          <h3 class="case-title">Bare-Metal Systems Focus & Proof Statement</h3>
+          <p class="case-desc">Computer Science student building low-level systems (N-OS custom C/Assembly kernel, Zig LLM orchestrator) and verifiable backend architecture.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%201/Proof_Statement.md" target="_blank" rel="noopener noreferrer" class="case-link" aria-label="Week 1 Bare-Metal Systems Proof">Read Proof Statement ➔</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Week 8 Dynamic Feature: Working Contact Form (Netlify Forms Backend) -->
+    <section id="contact-form-section" class="contact-section">
+      <h2 class="section-title" style="margin-bottom: 8px;">📬 Get in Touch (Working Contact Form)</h2>
+      <p style="color: var(--muted-color); margin-bottom: 24px;">Send a message directly via this form. Powered by Netlify Forms backend processing.</p>
+
+      <form id="contact-form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" name="form-name" value="contact" />
+        
+        <p style="display:none">
+          <label>Don’t fill this out if you're human: <input name="bot-field" /></label>
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="user-name" class="form-label">Your Name</label>
+            <input type="text" id="user-name" name="name" class="form-input" placeholder="e.g. Alex Smith" minlength="2" required />
+          </div>
+
+          <div class="form-group">
+            <label for="user-email" class="form-label">Your Email</label>
+            <input type="email" id="user-email" name="email" class="form-input" placeholder="alex@example.com" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="user-subject" class="form-label">Subject</label>
+          <input type="text" id="user-subject" name="subject" class="form-input" placeholder="Project Inquiry / Job Opportunity" minlength="3" required />
+        </div>
+
+        <div class="form-group">
+          <label for="user-message" class="form-label">Message</label>
+          <textarea id="user-message" name="message" class="form-textarea" placeholder="Hello Nivedh, I'd like to discuss a project..." minlength="5" required></textarea>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">
+          Send Message to Nivedh ✉
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <p>© 2026 Nivedh. FlyRank AI Internship — General AI Fluency & Backend AI Engineering</p>
+        
+        <!-- Official FlyRank Graduate Verification Badge (Points to GitHub Proof Repository) -->
+        <div class="flyrank-badge-container">
+          <a href="https://github.com/NivedhN160/flyrank-internship" target="_blank" rel="noopener noreferrer" class="flyrank-badge" aria-label="FlyRank Graduate Verification Badge">
+            <span class="badge-icon">⚡</span> Verified FlyRank AI Graduate — General AI Fluency & Backend Engineering
+          </a>
+        </div>
+      </div>
+      <p><a href="https://github.com/NivedhN160" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub Profile Link">github.com/NivedhN160</a></p>
+    </div>
+  </footer>
+
+  <script>
+    function handleFormSubmit(e) {
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerText = 'Sending Message... ⏳';
+    }
+  </script>
+</body>
+</html>

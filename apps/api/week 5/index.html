@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nivedh — Systems & Backend Engineering Portfolio</title>
+  <meta name="description" content="Personal engineering portfolio of Nivedh. Building resilient software from bare-metal C kernels to Dockerized FastAPI backends and polite web scrapers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-color: #0F172A;
+      --accent-color: #3B82F6;
+      --muted-color: #64748B;
+      --border-color: #E2E8F0;
+      --font-heading: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(248, 250, 252, 0.8);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-color);
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: #0F172A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-logo svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-name {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--muted-color);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--accent-color);
+    }
+
+    .hero {
+      padding: 80px 0 60px;
+      text-align: left;
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #EFF6FF;
+      color: var(--accent-color);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 20px;
+      border: 1px solid #BFDBFE;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: var(--muted-color);
+      max-width: 720px;
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .btn-primary:hover {
+      background-color: #2563EB;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      text-decoration: none;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #F1F5F9;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .case-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .case-card:hover {
+      border-color: var(--accent-color);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .case-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-color);
+      margin-bottom: 12px;
+    }
+
+    .case-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .case-desc {
+      font-size: 0.95rem;
+      color: var(--muted-color);
+      margin-bottom: 20px;
+    }
+
+    .case-link {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .case-link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      color: var(--muted-color);
+      font-size: 0.9rem;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .tagline {
+        font-size: 1.05rem;
+      }
+      .hero {
+        padding: 48px 0 40px;
+      }
+      .nav-links {
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-content">
+      <a href="/" class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 44V20L36 36V20H44V44L28 28V44H20Z" fill="#3B82F6"/>
+          </svg>
+        </div>
+        <span class="brand-name">Nivedh</span>
+      </a>
+      <nav class="nav-links">
+        <a href="https://github.com/NivedhN160" target="_blank" class="nav-link">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/nivedhn160/" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="LinkedIn Profile">LinkedIn ↗</a>
+        <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%201/Proof_Statement.md" target="_blank" class="nav-link">CV / Proof ↗</a>
+        <a href="mailto:nivedhn160@gmail.com" class="nav-link">Contact ✉</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="badge">General AI Fluency & Backend AI Engineering Track</div>
+      <h1>Nivedh — Systems & Backend Engineer</h1>
+      <p class="tagline">I build resilient, production-ready software from bare-metal C kernels to Dockerized FastAPI backends—and here is the verifiable code to prove it.</p>
+      
+      <div class="cta-group">
+        <a href="https://github.com/NivedhN160/flyrank-internship" target="_blank" class="btn-primary">
+          Inspect Code on GitHub ➔
+        </a>
+        <a href="mailto:nivedhn160@gmail.com" class="btn-secondary">
+          Book a Call / Email ✉
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Verified Engineering Case Studies</h2>
+      
+      <div class="case-grid">
+        <div class="case-card">
+          <div class="case-tag">Week 5 · BE-04</div>
+          <h3 class="case-title">The Polite Web Scraper & RAG Corpus</h3>
+          <p class="case-desc">Built a polite data scraper in Python with robots.txt compliance, custom User-Agent header, 1.5s rate-limiting delay, BeautifulSoup HTML extraction, and Pydantic JSON/CSV export.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%205/README.md" target="_blank" class="case-link">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-tag">Week 4 · BE-03</div>
+          <h3 class="case-title">Auth Login & Bearer JWT Protect</h3>
+          <p class="case-desc">Integrated Supabase Auth as Identity Provider (IdP), implemented FastAPI reusable HTTPBearer dependencies, and secured endpoints with 401 token verification.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%204/README.md" target="_blank" class="case-link">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-tag">Week 3 · BE-02</div>
+          <h3 class="case-title">Postgres in Docker & Repository Pattern</h3>
+          <p class="case-desc">Decoupled data storage using the Repository Pattern in Python. Swapped SQLite for PostgreSQL in Docker Compose with zero changes to API routes.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%203/README.md" target="_blank" class="case-link">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-tag">Week 2 · BE-01</div>
+          <h3 class="case-title">FastAPI Task CRUD REST API</h3>
+          <p class="case-desc">Built a lightweight REST API with 9 endpoints, HTTP status code enforcement, query filtering, stats calculation, and interactive Swagger UI docs.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%202/README.md" target="_blank" class="case-link">Read Case & Code Spec ➔</a>
+        </div>
+
+        <div class="case-card">
+          <div class="case-tag">Week 1 · Systems</div>
+          <h3 class="case-title">Bare-Metal Systems Focus & Proof Statement</h3>
+          <p class="case-desc">Computer Science student building low-level systems (N-OS custom C/Assembly kernel, Zig LLM orchestrator) and verifiable backend architecture.</p>
+          <a href="https://github.com/NivedhN160/flyrank-internship/blob/main/week%201/Proof_Statement.md" target="_blank" class="case-link">Read Proof Statement ➔</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <p>© 2026 Nivedh. Built with Plus Jakarta Sans & Inter | Identity Kit palette (#F8FAFC, #0F172A, #3B82F6)</p>
+      <p><a href="https://github.com/NivedhN160" target="_blank" class="nav-link">github.com/NivedhN160</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

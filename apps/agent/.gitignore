@@ -1,0 +1,9 @@
+plan.md
+build.md
+*.gguf
+__pycache__/
+*.pyc
+memory/*.db
+chroma_db/
+temp_audio.wav
+.env

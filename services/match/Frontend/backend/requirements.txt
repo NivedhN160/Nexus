@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+pydantic
+openai
+motor
+bcrypt
+python-dotenv
+python-multipart
+requests
+aiohttp
+anyio
+email-validator
+passlib
+dnspython
+pymongo
+chromadb
