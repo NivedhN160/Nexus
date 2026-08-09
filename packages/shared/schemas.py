@@ -10,3 +10,9 @@ class APIErrorResponse(BaseModel):
 class APIResponse(BaseModel):
     status: str = "success"
     data: Optional[Any] = None
+
+class ToolResultSchema(BaseModel):
+    ok: bool
+    result: Optional[Any] = None
+    error: Optional[Any] = None
+    latency_ms: int

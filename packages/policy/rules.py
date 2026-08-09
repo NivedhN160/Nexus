@@ -4,7 +4,7 @@ from .types import Evidence, VerdictLevel
 DANGEROUS_TOOLS = {
     "system.execute_shell": 100,
     "file.delete": 100,
-    "run_code": 80,
+    "sandbox.run_code": 80,
 }
 
 SUSPICIOUS_ARGS = [

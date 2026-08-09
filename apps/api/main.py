@@ -9,8 +9,7 @@ sys.path.append(str(root_dir))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.api.database import engine, Base
-from apps.api.routers import leads, content, social, metering, match, brain, audit, affect, approvals, sandbox
-# Create tables
+from apps.api.routers import leads, content, images, social, metering, match, brain, audit, affect, approvals, sandbox
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(

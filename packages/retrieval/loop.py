@@ -21,7 +21,7 @@ def retrieve_and_evaluate(query: str, attempt: int = 1) -> dict:
         # Give LLM a chance to rewrite
         return {"state": RAGState.REWRITE_QUERY, "data": []}
         
-    if conf < 0.2:
+    if conf <= 0.2:
         return {"state": RAGState.LOW_CONFIDENCE, "data": []}
         
     return {"state": RAGState.CLARIFY, "data": []}
