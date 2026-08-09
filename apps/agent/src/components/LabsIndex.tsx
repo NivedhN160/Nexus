@@ -1,11 +1,30 @@
-import React from 'react';
-import { ExternalLink, Database, Cpu, Globe } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ExternalLink, Database, Cpu, Globe, UserCheck } from 'lucide-react';
 
 export default function LabsIndex() {
   const myLabs = [
     { title: 'Terra-X', desc: 'Global climate modeling & offline weather', status: 'Unavailable', icon: Globe },
     { title: 'Stock Analyser', desc: 'Realtime stock simulator & charting', status: 'Unavailable', icon: Cpu }
   ];
+
+  const [isPresent, setIsPresent] = useState(false);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/labs/presence')
+      .then(res => res.json())
+      .then(data => setIsPresent(data.is_present))
+      .catch(console.error);
+  }, []);
+
+  const togglePresence = async () => {
+    const newVal = !isPresent;
+    setIsPresent(newVal);
+    await fetch('http://localhost:8000/labs/presence', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_present: newVal })
+    });
+  };
 
   const resources = [
     { title: 'Free APIs for Devs', link: 'https://github.com/public-apis/public-apis', icon: Globe, desc: 'A collective list of free APIs' },
@@ -37,6 +56,26 @@ export default function LabsIndex() {
             </button>
           </div>
         ))}
+
+        <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <UserCheck className="text-teal" size={24} />
+            <span style={{ fontSize: '12px', padding: '4px 8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', color: 'var(--accent-teal)' }}>
+              Active
+            </span>
+          </div>
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Presence Provider</h3>
+            <p className="text-muted" style={{ fontSize: '13px' }}>Mock contextual presence for the agent.</p>
+          </div>
+          <button 
+            onClick={togglePresence}
+            style={{ marginTop: 'auto', padding: '8px', background: isPresent ? 'var(--accent-teal)' : '#333', color: isPresent ? '#000' : '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+          >
+            {isPresent ? "User is Present" : "User is Away"}
+          </button>
+        </div>
+
       </div>
 
       <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>Free resources</h3>

@@ -124,6 +124,25 @@ class AuditReport(Base):
     quality_score = Column(Integer, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+class AuditSession(Base):
+    __tablename__ = "audit_sessions"
+    id = Column(String, primary_key=True, index=True) # UUID
+    target = Column(String)
+    status = Column(String, default="active") # active, complete, failed
+    final_report = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    steps = relationship("AuditStep", back_populates="session")
+
+class AuditStep(Base):
+    __tablename__ = "audit_steps"
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(String, ForeignKey("audit_sessions.id"))
+    step_type = Column(String) # inspect, check_secrets, summarize
+    findings = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    session = relationship("AuditSession", back_populates="steps")
+
 class PendingApproval(Base):
     __tablename__ = "pending_approvals"
     id = Column(String, primary_key=True, index=True) # UUID
@@ -147,5 +166,6 @@ class MemoryChunk(Base):
     __tablename__ = "memory_chunks"
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text)
+    memory_type = Column(String, default="FACTS") # FACTS, HISTORY, KNOWLEDGE, INSTRUCTIONS
     tags = Column(JSON, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

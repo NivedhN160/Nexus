@@ -18,13 +18,13 @@ Nexus is built to be **100% free by default**.
 
 | Module | Status | Description |
 |--------|--------|-------------|
-| **Agent Console** | Fully wired | Chat and tool execution powered by local AI. |
+| **Agent Console** | Fully wired | Chat and tool execution powered by local AI. Features budget enforcement, guardrails, memory, and sandboxed python execution. |
 | **Lead Stream** | Fully wired | Ingests portfolio widget submissions securely with honeypots and rate limiting. |
 | **Content Pipeline** | Fully wired | Drafts posts and ranks images for mismatch guarding. |
 | **Social Graph** | Fully wired | Schedules multi-platform campaigns via background worker. |
-| **Dev Audit** | Fully wired | Analyzes frustration signals and generates CodePulse audit reports. |
+| **Dev Audit** | Fully wired | Analyzes frustration signals and generates multi-step CodePulse audit sessions in Postgres. |
 | **Matchmaking** | Partial | Semantic search and ephemeral chat threading. |
-| **Labs** | Experimental | Secondary area for heavy prototypes like Terra-X and Stock Analyser. |
+| **Labs** | Experimental | Secondary area for heavy prototypes like Terra-X, Stock Analyser, and Presence/Context Mocking. |
 
 ## Screenshots
 
@@ -70,8 +70,9 @@ graph TD
 | Lead Stream | Flyrank-Backend-Capstone |
 | Social Graph | Multi-Platform-Social |
 | Matchmaking | MAT-CHA.AI |
-| Dev Audit | AI-Fluency |
-| Labs | Terra-X, Realtime-stock |
+| Dev Audit | AI-Fluency, opensre |
+| Core Security & Observability | syrin-harness (Budget, Hooks, Guardrails, Sandbox, Memory Types) |
+| Labs | Terra-X, Realtime-stock, RuView (Presence signals) |
 
 ## Current limitations
 - The system is designed for single-user scale.

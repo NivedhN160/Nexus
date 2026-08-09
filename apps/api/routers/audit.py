@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from packages.shared.auth import get_api_key
 import uuid
@@ -6,50 +6,51 @@ import uuid
 router = APIRouter(dependencies=[Depends(get_api_key)])
 from sqlalchemy.orm import Session
 from apps.api.database import get_db
-from apps.api.models import AuditReport
+from apps.api.models import AuditReport, AuditSession, AuditStep, DecisionLog
 
-class AuditRequest(BaseModel):
+class AuditStartRequest(BaseModel):
     target_path: str
 
-class AuditResponse(BaseModel):
-    report_id: str
-    status: str
+class AuditStepRequest(BaseModel):
+    step_type: str
+    findings: dict
 
-@router.post("/run", response_model=AuditResponse)
-def run_audit(req: AuditRequest, db: Session = Depends(get_db)):
-    # Stub CodePulse audit
-    # In a real system, this would call the CodePulse MCP server or agent
-    report_id = str(uuid.uuid4())
-    
-    quality_score = 92
-    grade = "A+"
-    md_content = f"""# CodePulse Audit Report ({report_id})
-
-## Overall Quality Score: {quality_score}/100 (Grade: {grade})
-
-## Secrets Isolation
-- PASS: No hardcoded secrets found. (+30 pts)
-
-## Tests
-- PASS: 14/14 unit tests passed. (+40 pts)
-
-## Politeness & Rate Limiting
-- PASS: Scraper delay configured to 2.5s. (+22 pts)
-"""
-    report = AuditReport(id=report_id, report_markdown=md_content, quality_score=quality_score)
-    db.add(report)
+@router.post("/sessions")
+def start_audit_session(req: AuditStartRequest, db: Session = Depends(get_db)):
+    session_id = str(uuid.uuid4())
+    session = AuditSession(id=session_id, target=req.target_path)
+    db.add(session)
     db.commit()
-    
-    return AuditResponse(report_id=report_id, status="completed")
+    return {"session_id": session_id, "status": "active"}
 
-@router.get("/reports/{report_id}")
-def get_report(report_id: str, db: Session = Depends(get_db)):
-    report = db.query(AuditReport).filter(AuditReport.id == report_id).first()
-    if not report:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="Report not found")
+@router.post("/sessions/{session_id}/steps")
+def add_audit_step(session_id: str, req: AuditStepRequest, db: Session = Depends(get_db)):
+    session = db.query(AuditSession).filter(AuditSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
         
-    return {"id": report.id, "markdown": report.report_markdown, "score": report.quality_score}
+    step = AuditStep(session_id=session_id, step_type=req.step_type, findings=req.findings)
+    db.add(step)
+    db.commit()
+    return {"step_id": step.id, "status": "added"}
+
+@router.post("/sessions/{session_id}/summarize")
+def summarize_audit(session_id: str, db: Session = Depends(get_db)):
+    session = db.query(AuditSession).filter(AuditSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+        
+    steps = db.query(AuditStep).filter(AuditStep.session_id == session_id).all()
+    
+    # Generate final report string
+    report = f"# Dev Audit Session ({session_id})\nTarget: {session.target}\n\n"
+    for s in steps:
+        report += f"### Step: {s.step_type}\nFindings: {s.findings}\n\n"
+        
+    session.final_report = report
+    session.status = "complete"
+    db.commit()
+    return {"session_id": session_id, "final_report": report}
 
 @router.get("/logs")
 def get_logs():
@@ -58,3 +59,19 @@ def get_logs():
         {"time": "5 mins ago", "level": "INFO", "message": "PostgreSQL database connected."},
         {"time": "5 mins ago", "level": "INFO", "message": "Redis cache connected."}
     ]
+
+@router.get("/tools/active")
+def get_active_tools(db: Session = Depends(get_db)):
+    logs = db.query(DecisionLog).order_by(DecisionLog.created_at.desc()).limit(10).all()
+    # Unique tool names preserving order
+    tools = []
+    seen = set()
+    for log in logs:
+        if log.tool_name not in seen:
+            seen.add(log.tool_name)
+            tools.append(log.tool_name)
+            if len(tools) == 3:
+                break
+    if not tools:
+        return ["Web_Scraper_v2", "Social_Queue_Mgr", "Data_Guard_Alpha"]
+    return tools

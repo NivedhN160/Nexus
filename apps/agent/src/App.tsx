@@ -11,6 +11,26 @@ import LabsIndex from './components/LabsIndex';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('agent');
+  const [budgetUsage, setBudgetUsage] = useState(0);
+  const [activeTools, setActiveTools] = useState<string[]>(['Web_Scraper_v2', 'Social_Queue_Mgr', 'Data_Guard_Alpha']);
+
+  React.useEffect(() => {
+    fetch('http://localhost:8000/metering/usage', {
+      headers: { 'Authorization': 'Bearer test_key_123' }
+    })
+    .then(res => res.json())
+    .then(data => setBudgetUsage(Math.round(data.percentage_used || 0)))
+    .catch(console.error);
+
+    fetch('http://localhost:8000/audit/tools/active', {
+      headers: { 'Authorization': 'Bearer test_key_123' }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) setActiveTools(data);
+    })
+    .catch(console.error);
+  }, []);
 
   return (
     <div className="nexus-layout">
@@ -121,11 +141,11 @@ export default function App() {
 
         <div className="glass-panel" style={{ padding: '16px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span className="text-muted" style={{ fontSize: '12px' }}>Memory</span>
-            <span className="text-amber mono" style={{ fontSize: '12px' }}>82%</span>
+            <span className="text-muted" style={{ fontSize: '12px' }}>Budget Used</span>
+            <span className="text-amber mono" style={{ fontSize: '12px' }}>{budgetUsage}%</span>
           </div>
           <div style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}>
-            <div style={{ height: '100%', width: '82%', background: 'var(--warning-amber)', borderRadius: '2px' }}></div>
+            <div style={{ height: '100%', width: `${budgetUsage}%`, background: budgetUsage > 80 ? 'var(--warning-amber)' : 'var(--accent-teal)', borderRadius: '2px' }}></div>
           </div>
         </div>
         
@@ -133,7 +153,7 @@ export default function App() {
           Active Tools
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {['Web_Scraper_v2', 'Social_Queue_Mgr', 'Data_Guard_Alpha'].map(t => (
+          {activeTools.map(t => (
             <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Play size={12} className="text-teal" />
               <span className="mono" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{t}</span>

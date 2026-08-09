@@ -9,7 +9,7 @@ sys.path.append(str(root_dir))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.api.database import engine, Base
-from apps.api.routers import leads, content, images, social, metering, match, brain, audit, affect, approvals, sandbox, voice, mcp
+from apps.api.routers import leads, content, images, social, metering, match, brain, audit, affect, approvals, sandbox, voice, mcp, labs
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -39,6 +39,7 @@ app.include_router(brain.router, prefix="/brain", tags=["Brain"])
 app.include_router(sandbox.router, prefix="/v1/sandbox", tags=["Sandbox"])
 app.include_router(voice.router, prefix="/v1/voice", tags=["Voice"])
 app.include_router(mcp.router, prefix="/v1/mcp", tags=["MCP"])
+app.include_router(labs.router, prefix="/labs", tags=["Labs"])
 @app.get("/health")
 def health_check():
     return {"status": "ok"}

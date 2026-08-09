@@ -11,6 +11,12 @@ from apps.api.database import get_db
 from apps.api.models import Thread, Message
 from apps.api.routers.metering import record_event, EventCreate
 from apps.api.actions.registry import call_tool
+from packages.agent_hooks.bus import bus
+from packages.guardrails.safety import check_input, check_output, check_tool_call
+from packages.shared.budget import Budget
+
+# Global budget for single user
+agent_budget = Budget(max_tokens=50000, max_cost=5.0)
 
 from groq import Groq
 
@@ -30,6 +36,17 @@ class BrainResponse(BaseModel):
 
 @router.post("/chat", response_model=BrainResponse)
 def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
+    bus.emit("agent_run_start", {"session_id": req.session_id, "text": req.text})
+    
+    # 1. Guardrail Input
+    is_safe, reason = check_input(req.text)
+    if not is_safe:
+        return BrainResponse(answer=reason, tool_cards=[], usage={"input_tokens": 0, "output_tokens": 0})
+        
+    # 2. Budget Check
+    if not agent_budget.can_afford(100):
+        bus.emit("budget_exceeded", {"session_id": req.session_id})
+        return BrainResponse(answer="I have exceeded my execution budget. Please top up or increase the limit.", tool_cards=[], usage={"input_tokens": 0, "output_tokens": 0})
     # Free-by-default architecture: Local models first
     llm_provider = os.getenv("LLM_PROVIDER", "local")
     cloud_enabled = os.getenv("NEXUS_CLOUD_LLM", "0") == "1"
@@ -143,13 +160,21 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
         response_message = response.choices[0].message
         tool_cards = []
         
-        # Handle tool calls
+            # Handle tool calls
         if response_message.tool_calls:
             for tool_call in response_message.tool_calls:
                 function_name = tool_call.function.name
                 function_args = json.loads(tool_call.function.arguments)
                 
-                tool_res = call_tool(function_name, function_args, db)
+                # Guardrail Tool Call
+                tool_safe, tool_reason = check_tool_call(function_name, function_args)
+                if not tool_safe:
+                    tool_res = ToolResultSchema(name=function_name, status="error", data={"error": tool_reason})
+                else:
+                    bus.emit("tool_call_start", {"name": function_name, "args": function_args})
+                    tool_res = call_tool(function_name, function_args, db)
+                    bus.emit("tool_call_end", {"name": function_name, "status": tool_res.status})
+                    
                 tool_cards.append(tool_res)
                 
                 messages.append(response_message)
@@ -168,6 +193,11 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
             final_answer = second_response.choices[0].message.content
         else:
             final_answer = response_message.content
+            
+        # Guardrail Output
+        out_safe, out_reason = check_output(final_answer or "")
+        if not out_safe:
+            final_answer = out_reason
 
         # Save AI Responses to DB
         if response_message.tool_calls:
@@ -212,6 +242,9 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
             input_tokens=input_t,
             output_tokens=output_t
         ), db)
+        
+        agent_budget.record(input_t + output_t, cost=(input_t + output_t) * 0.00001)
+        bus.emit("agent_run_end", {"session_id": req.session_id, "usage": input_t + output_t})
 
         return BrainResponse(
             answer=final_answer or "",
@@ -225,4 +258,11 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        error_str = str(e)
+        if "tool_use_failed" in error_str or "Failed to call a function" in error_str:
+            return BrainResponse(
+                answer="I encountered a syntax error while trying to use a tool. Please try rephrasing your request.",
+                tool_cards=[],
+                usage={"input_tokens": 0, "output_tokens": 0}
+            )
+        raise HTTPException(status_code=500, detail=error_str)
