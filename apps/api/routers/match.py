@@ -3,13 +3,19 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List
 from apps.api.database import get_db
-from apps.api.models import MatchThread, MatchMessage
+from apps.api.models import MatchThread, MatchMessage, MatchProfile
 from packages.shared.auth import get_api_key
+import uuid
 
 router = APIRouter(dependencies=[Depends(get_api_key)])
 
 class SearchRequest(BaseModel):
     query: str
+
+class ProfileCreate(BaseModel):
+    name: str
+    tags: List[str]
+    bio: str
 
 class MatchCandidate(BaseModel):
     id: str
@@ -37,14 +43,40 @@ class ThreadResponse(BaseModel):
     class Config:
         from_attributes = True
 
+@router.post("/profiles")
+def create_profile(profile: ProfileCreate, db: Session = Depends(get_db)):
+    db_profile = MatchProfile(
+        id=str(uuid.uuid4()),
+        name=profile.name,
+        tags=profile.tags,
+        bio=profile.bio,
+        embedding=[0.1, 0.2, 0.3] # Stub embedding
+    )
+    db.add(db_profile)
+    db.commit()
+    return {"id": db_profile.id, "status": "created"}
+
 @router.post("/search", response_model=List[MatchCandidate])
-def search_match(req: SearchRequest):
-    # Stub semantic search
-    # In a real system, would embed the query and query a vector store
-    return [
-        MatchCandidate(id="p1", name="Alice Developer", score=0.92, tags=["backend", "python"]),
-        MatchCandidate(id="p2", name="Bob Designer", score=0.85, tags=["ui", "figma"])
-    ]
+def search_match(req: SearchRequest, db: Session = Depends(get_db)):
+    # Local semantic search simulation over MatchProfiles
+    profiles = db.query(MatchProfile).all()
+    results = []
+    
+    query_lower = req.query.lower()
+    for p in profiles:
+        score = 0.5
+        for tag in p.tags:
+            if tag.lower() in query_lower:
+                score += 0.2
+        if p.bio and query_lower in p.bio.lower():
+            score += 0.3
+            
+        score = min(0.99, score)
+        if score >= 0.5:
+            results.append(MatchCandidate(id=p.id, name=p.name, score=score, tags=p.tags))
+            
+    results.sort(key=lambda x: x.score, reverse=True)
+    return results
 
 @router.post("/threads", response_model=ThreadCreateResponse)
 def create_thread(db: Session = Depends(get_db)):

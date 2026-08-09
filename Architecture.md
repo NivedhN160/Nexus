@@ -1,6 +1,6 @@
 # Nexus Web: System Architecture
 
-Nexus is an integrated personal AI operations platform. It combines multiple modular tools and capstones into a single, cohesive, self-hosted web product.
+Nexus is an integrated personal AI operations platform integrating modules built during the FlyRank AI internship + flagship projects into a single, cohesive, self-hosted web product.
 
 ## Free-First, Local-Default Design
 **Nexus is designed to be free by default.** It does not require paid API keys to operate.

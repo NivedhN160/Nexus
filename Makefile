@@ -15,6 +15,7 @@ verify:
 	@echo "Verifying Nexus UI is reachable..."
 	@curl -s -o /dev/null -w "%{http_code}" http://localhost:5173 | grep 200 > /dev/null && echo "UI: OK" || echo "UI: FAILED"
 	@echo "Verification Complete."
+	docker compose exec api pytest tests/
 
 # View all logs
 logs:

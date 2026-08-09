@@ -4,6 +4,9 @@ from packages.shared.auth import get_api_key
 import uuid
 
 router = APIRouter(dependencies=[Depends(get_api_key)])
+from sqlalchemy.orm import Session
+from apps.api.database import get_db
+from apps.api.models import AuditReport
 
 class AuditRequest(BaseModel):
     target_path: str
@@ -13,21 +16,13 @@ class AuditResponse(BaseModel):
     status: str
 
 @router.post("/run", response_model=AuditResponse)
-def run_audit(req: AuditRequest):
+def run_audit(req: AuditRequest, db: Session = Depends(get_db)):
     # Stub CodePulse audit
     # In a real system, this would call the CodePulse MCP server or agent
     report_id = str(uuid.uuid4())
     
-    # Fake report generation
-    return AuditResponse(report_id=report_id, status="completed")
-
-@router.get("/reports/{report_id}")
-def get_report(report_id: str):
-    # Stub markdown report
-    # Added "Quality Score" heuristic inspired by CompileArtisan/club
     quality_score = 92
     grade = "A+"
-    
     md_content = f"""# CodePulse Audit Report ({report_id})
 
 ## Overall Quality Score: {quality_score}/100 (Grade: {grade})
@@ -41,7 +36,20 @@ def get_report(report_id: str):
 ## Politeness & Rate Limiting
 - PASS: Scraper delay configured to 2.5s. (+22 pts)
 """
-    return {"id": report_id, "markdown": md_content, "score": quality_score}
+    report = AuditReport(id=report_id, report_markdown=md_content, quality_score=quality_score)
+    db.add(report)
+    db.commit()
+    
+    return AuditResponse(report_id=report_id, status="completed")
+
+@router.get("/reports/{report_id}")
+def get_report(report_id: str, db: Session = Depends(get_db)):
+    report = db.query(AuditReport).filter(AuditReport.id == report_id).first()
+    if not report:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Report not found")
+        
+    return {"id": report.id, "markdown": report.report_markdown, "score": report.quality_score}
 
 @router.get("/logs")
 def get_logs():

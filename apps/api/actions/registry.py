@@ -22,19 +22,19 @@ def call_tool(name: str, args: Dict[str, Any], db: Session) -> ToolResultSchema:
         elif name == "audit.get_health":
             result = get_health(db)
         elif name == "system.execute_shell":
-            result = execute_shell(args)
-            if "NEEDS_APPROVAL" in str(result):
+            result = execute_shell(args, db)
+            if result.get("status") == "NEEDS_APPROVAL":
                 ok = False
                 error = {"code": "NEEDS_APPROVAL", "message": result.get("message")}
                 result = None
         elif name == "sandbox.run_code":
-            result = run_code(args)
-            if "NEEDS_APPROVAL" in str(result):
+            result = run_code(args, db)
+            if result.get("status") == "NEEDS_APPROVAL":
                 ok = False
                 error = {"code": "NEEDS_APPROVAL", "message": result.get("message")}
                 result = None
         elif name == "memory.search":
-            result = search_memory(args)
+            result = search_memory(args, db)
             if "state" in result and result["state"] == "LOW_CONFIDENCE":
                 ok = False
                 error = {"code": "LOW_CONFIDENCE", "message": "No direct matches found. Please ask clarifying questions or rewrite query."}

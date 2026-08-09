@@ -1,20 +1,22 @@
-import random
+from sqlalchemy.orm import Session
+from apps.api.models import MemoryChunk
 
-def query_local_index(query: str) -> dict:
+def query_local_index(query: str, db: Session = None) -> dict:
     """
-    Mock of a local memory/vector index search (e.g. SQLite/Chroma).
-    In a real scenario, this queries the local DB.
+    Search the MemoryChunk table.
     """
+    if not db:
+        return {"confidence": 0.1, "results": []}
+        
+    chunks = db.query(MemoryChunk).all()
+    if not chunks:
+        # Empty index -> LOW_CONFIDENCE
+        return {"confidence": 0.1, "results": []}
+        
     query_lower = query.lower()
+    matches = [c.content for c in chunks if query_lower in c.content.lower()]
     
-    # Deterministic mock responses for testing
-    if "nexus" in query_lower:
-        return {"confidence": 0.9, "results": ["Nexus is an integrated personal AI operations platform."]}
-    elif "password" in query_lower or "secret" in query_lower:
-        return {"confidence": 0.2, "results": []}
-    
-    # Random fallback for simulation
-    conf = random.uniform(0.1, 0.9)
-    if conf > 0.7:
-        return {"confidence": conf, "results": [f"Found some generic data related to {query}."]}
-    return {"confidence": conf, "results": []}
+    if matches:
+        return {"confidence": 0.9, "results": matches}
+        
+    return {"confidence": 0.2, "results": []}

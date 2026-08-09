@@ -2,6 +2,11 @@ import React from 'react';
 import { ExternalLink, Database, Cpu, Globe } from 'lucide-react';
 
 export default function LabsIndex() {
+  const myLabs = [
+    { title: 'Terra-X', desc: 'Global climate modeling & offline weather', status: 'Unavailable', icon: Globe },
+    { title: 'Stock Analyser', desc: 'Realtime stock simulator & charting', status: 'Unavailable', icon: Cpu }
+  ];
+
   const resources = [
     { title: 'Free APIs for Devs', link: 'https://github.com/public-apis/public-apis', icon: Globe, desc: 'A collective list of free APIs' },
     { title: 'Open Source Alternative To', link: 'https://github.com/RunaCapital/awesome-oss-alternatives', icon: Database, desc: 'OSS alternatives to SaaS' },
@@ -11,8 +16,30 @@ export default function LabsIndex() {
   return (
     <div style={{ padding: '24px', height: '100%', overflowY: 'auto' }}>
       <h2 style={{ fontSize: '24px', marginBottom: '8px' }}>Labs & Resources</h2>
-      <p className="text-muted" style={{ marginBottom: '32px' }}>Curated free resources inspired by the icopy-site/awesome index.</p>
+      <p className="text-muted" style={{ marginBottom: '32px' }}>Experimental modules and curated free resources.</p>
       
+      <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>My labs</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+        {myLabs.map((lab, idx) => (
+          <div key={idx} className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px', opacity: 0.7 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <lab.icon className="text-muted" size={24} />
+              <span style={{ fontSize: '12px', padding: '4px 8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', color: '#888' }}>
+                {lab.status}
+              </span>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px', color: '#888' }}>{lab.title}</h3>
+              <p className="text-muted" style={{ fontSize: '13px' }}>{lab.desc}</p>
+            </div>
+            <button disabled style={{ marginTop: 'auto', padding: '8px', background: '#333', color: '#666', border: 'none', borderRadius: '4px', cursor: 'not-allowed' }}>
+              Open
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <h3 style={{ fontSize: '20px', marginBottom: '16px' }}>Free resources</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
         {resources.map((res, idx) => (
           <a key={idx} href={res.link} target="_blank" rel="noreferrer" className="glass-panel" style={{ padding: '20px', textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', gap: '12px', transition: 'all 0.2s' }}>

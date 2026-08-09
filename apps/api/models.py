@@ -72,6 +72,14 @@ class MeteringEvent(Base):
     cost_microcents = Column(Integer)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+class MatchProfile(Base):
+    __tablename__ = "match_profiles"
+    id = Column(String, primary_key=True, index=True)
+    name = Column(String)
+    tags = Column(JSON) # list of tags
+    bio = Column(Text, nullable=True)
+    embedding = Column(JSON, nullable=True) # Fake local embedding
+
 class MatchThread(Base):
     __tablename__ = "match_threads"
     id = Column(Integer, primary_key=True, index=True)
@@ -88,3 +96,56 @@ class MatchMessage(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     thread = relationship("MatchThread", back_populates="messages")
+
+class Thread(Base):
+    __tablename__ = "threads"
+    id = Column(String, primary_key=True, index=True) # UUID session_id
+    title = Column(String, default="New Chat")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    messages = relationship("Message", back_populates="thread")
+
+class Message(Base):
+    __tablename__ = "messages"
+    id = Column(Integer, primary_key=True, index=True)
+    thread_id = Column(String, ForeignKey("threads.id"))
+    role = Column(String) # system, user, model, tool
+    content = Column(Text, nullable=True)
+    tool_calls = Column(JSON, nullable=True)
+    tool_call_id = Column(String, nullable=True)
+    name = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    thread = relationship("Thread", back_populates="messages")
+
+class AuditReport(Base):
+    __tablename__ = "audit_reports"
+    id = Column(String, primary_key=True, index=True) # UUID report_id
+    report_markdown = Column(Text)
+    quality_score = Column(Integer, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class PendingApproval(Base):
+    __tablename__ = "pending_approvals"
+    id = Column(String, primary_key=True, index=True) # UUID
+    tool_name = Column(String)
+    arguments = Column(JSON)
+    reason = Column(Text)
+    status = Column(String, default="pending") # pending, approved, denied, executed
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class DecisionLog(Base):
+    __tablename__ = "decision_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    tool_name = Column(String)
+    arguments = Column(JSON)
+    level = Column(String)
+    score = Column(Integer)
+    reason = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class MemoryChunk(Base):
+    __tablename__ = "memory_chunks"
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(Text)
+    tags = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

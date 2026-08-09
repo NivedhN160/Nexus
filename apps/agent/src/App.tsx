@@ -35,8 +35,7 @@ export default function App() {
             { id: 'social', icon: Share2, label: 'Social Graph' },
             { id: 'leads', icon: Layers, label: 'Lead Stream' },
             { id: 'match', icon: Activity, label: 'Matchmaking' },
-            { id: 'audit', icon: ShieldAlert, label: 'Dev Audit' },
-            { id: 'labs', icon: Cpu, label: 'Labs (Terra-X)' }
+            { id: 'audit', icon: ShieldAlert, label: 'Dev Audit' }
           ].map(item => (
             <div 
               key={item.id}
@@ -57,6 +56,28 @@ export default function App() {
               <span style={{ fontSize: '14px', fontWeight: 500 }}>{item.label}</span>
             </div>
           ))}
+
+          <div style={{ marginTop: '24px', marginBottom: '8px', paddingLeft: '12px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-secondary)' }}>
+            Experimental
+          </div>
+          
+          <div 
+            onClick={() => setActiveTab('labs')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              background: activeTab === 'labs' ? 'var(--accent-teal-dim)' : 'transparent',
+              color: activeTab === 'labs' ? 'var(--accent-teal)' : 'var(--text-secondary)',
+              border: activeTab === 'labs' ? '1px solid var(--accent-teal)' : '1px solid transparent'
+            }}
+          >
+            <Cpu size={18} />
+            <span style={{ fontSize: '14px', fontWeight: 500 }}>Labs</span>
+          </div>
         </div>
       </nav>
 

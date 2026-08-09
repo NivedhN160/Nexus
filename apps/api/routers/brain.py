@@ -8,6 +8,8 @@ from packages.shared.auth import get_api_key
 from packages.shared.schemas import ToolResultSchema
 from sqlalchemy.orm import Session
 from apps.api.database import get_db
+from apps.api.models import Thread, Message
+from apps.api.routers.metering import record_event, EventCreate
 from apps.api.actions.registry import call_tool
 
 from groq import Groq
@@ -42,6 +44,18 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
         )
         
     client = Groq(api_key=groq_api_key)
+    
+    # 1. Get or create Thread
+    thread = db.query(Thread).filter(Thread.id == req.session_id).first()
+    if not thread:
+        thread = Thread(id=req.session_id)
+        db.add(thread)
+        db.commit()
+
+    # 2. Save User Message
+    user_msg = Message(thread_id=req.session_id, role="user", content=req.text)
+    db.add(user_msg)
+    db.commit()
     
     messages = [
         {"role": "system", "content": "You are Nexus, a personal AI operations platform agent. You manage content, leads, social scheduling, and research."}
@@ -120,7 +134,7 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
     
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=messages,
             tools=tools,
             tool_choice="auto"
@@ -148,19 +162,63 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
             
             # Second call to LLM after tool results
             second_response = client.chat.completions.create(
-                model="llama-3.1-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=messages
             )
             final_answer = second_response.choices[0].message.content
         else:
             final_answer = response_message.content
 
+        # Save AI Responses to DB
+        if response_message.tool_calls:
+            # Save the tool calls message
+            tc_data = [{"id": tc.id, "function": {"name": tc.function.name, "arguments": tc.function.arguments}, "type": tc.type} for tc in response_message.tool_calls]
+            llm_tc_msg = Message(thread_id=req.session_id, role="model", tool_calls=tc_data)
+            db.add(llm_tc_msg)
+            
+            # Save tool results
+            for idx, tc in enumerate(response_message.tool_calls):
+                tool_msg = Message(
+                    thread_id=req.session_id, 
+                    role="tool", 
+                    tool_call_id=tc.id, 
+                    name=tc.function.name, 
+                    content=json.dumps(tool_cards[idx].dict())
+                )
+                db.add(tool_msg)
+                
+            # Save final answer
+            if final_answer:
+                final_msg = Message(thread_id=req.session_id, role="model", content=final_answer)
+                db.add(final_msg)
+        else:
+            # Save final answer
+            final_msg = Message(thread_id=req.session_id, role="model", content=final_answer or "")
+            db.add(final_msg)
+            
+        db.commit()
+
+        # Metering
+        input_t = response.usage.prompt_tokens if hasattr(response, 'usage') and response.usage else 0
+        output_t = response.usage.completion_tokens if hasattr(response, 'usage') and response.usage else 0
+        
+        if response_message.tool_calls and 'second_response' in locals():
+            input_t += second_response.usage.prompt_tokens if hasattr(second_response, 'usage') and second_response.usage else 0
+            output_t += second_response.usage.completion_tokens if hasattr(second_response, 'usage') and second_response.usage else 0
+            
+        record_event(EventCreate(
+            idempotency_key=f"llm_{req.session_id}_{int(time.time()*1000)}",
+            event_type="llm",
+            input_tokens=input_t,
+            output_tokens=output_t
+        ), db)
+
         return BrainResponse(
             answer=final_answer or "",
             tool_cards=tool_cards,
             usage={
-                "input_tokens": response.usage.prompt_tokens if hasattr(response, 'usage') and response.usage else 0,
-                "output_tokens": response.usage.completion_tokens if hasattr(response, 'usage') and response.usage else 0
+                "input_tokens": input_t,
+                "output_tokens": output_t
             }
         )
         

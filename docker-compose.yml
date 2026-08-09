@@ -36,6 +36,7 @@ services:
     volumes:
       - ./apps/api:/app/apps/api
       - ./packages:/app/packages
+      - ./tests:/app/tests
 
   worker:
     build:
@@ -51,6 +52,7 @@ services:
         condition: service_started
     volumes:
       - ./apps/worker:/app/apps/worker
+      - ./apps/api:/app/apps/api
       - ./packages:/app/packages
 
   postgres:
