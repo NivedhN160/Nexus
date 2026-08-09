@@ -4,8 +4,6 @@ Nexus is a single-user, self-hosted AI operations platform integrating modules b
 
 Agent + content + leads + social + metering + tools — all local-first, free by default, running under one docker compose.
 
-![Nexus Demo Video Placeholder](./docs/media/demo.webp)
-
 ## What it is
 Nexus is a unified mission-control interface that brings together various specialized backend capabilities into one cohesive platform. It orchestrates AI agent interactions, content generation, social media scheduling, lead generation pipelines, and system audits all under one roof.
 
