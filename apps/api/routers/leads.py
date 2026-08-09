@@ -6,6 +6,13 @@ from typing import List, Dict, Any
 from apps.api.database import get_db
 from apps.api.models import Widget, Submission
 from packages.shared.auth import get_api_key
+import html
+import time
+from collections import defaultdict
+
+# Simple in-memory rate limiter (MVP)
+RATE_LIMIT_STORE = defaultdict(list)
+MAX_REQUESTS_PER_MINUTE = 5
 
 public_router = APIRouter()
 admin_router = APIRouter(dependencies=[Depends(get_api_key)])
@@ -77,11 +84,23 @@ async def submit_lead(widget_id: int, req: Request, sub: SubmissionCreate, db: S
         
     # 2. Rate limit (Stub) - would normally check Redis by IP
     client_ip = req.client.host if req.client else "unknown"
+    current_time = time.time()
+    
+    # Clean up old entries
+    RATE_LIMIT_STORE[client_ip] = [t for t in RATE_LIMIT_STORE[client_ip] if current_time - t < 60]
+    
+    if len(RATE_LIMIT_STORE[client_ip]) >= MAX_REQUESTS_PER_MINUTE:
+        raise HTTPException(status_code=429, detail="Too many submissions. Please wait a minute.")
+        
+    RATE_LIMIT_STORE[client_ip].append(current_time)
     
     # 3. Honeypot check
     if sub.honeypot != "":
         # Silently drop
         return {"status": "success", "message": "Thank you for your submission."}
+        
+    # 3b. HTML Sanitize
+    sanitized_message = html.escape(sub.message)
         
     # 4. Geo fallback
     geo = "US" # Stub for geo lookup
@@ -96,7 +115,7 @@ async def submit_lead(widget_id: int, req: Request, sub: SubmissionCreate, db: S
                 widget_id=widget_id,
                 name=sub.name,
                 email=sub.email,
-                message=sub.message,
+                message=sanitized_message,
                 geo=geo,
                 status="new"
             )

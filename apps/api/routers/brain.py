@@ -8,7 +8,7 @@ from packages.shared.auth import get_api_key
 from packages.shared.schemas import ToolResultSchema
 from sqlalchemy.orm import Session
 from apps.api.database import get_db
-from apps.api.models import Submission
+from apps.api.actions.registry import call_tool
 
 from groq import Groq
 
@@ -24,35 +24,6 @@ class BrainResponse(BaseModel):
     tool_cards: List[ToolResultSchema]
     usage: Dict[str, int]
 
-# Basic Tool implementations
-def call_tool(name: str, args: Dict[str, Any], db: Session) -> ToolResultSchema:
-    start_time = time.time()
-    result = None
-    error = None
-    ok = True
-    
-    try:
-        if name == "leads.get_recent":
-            subs = db.query(Submission).order_by(Submission.created_at.desc()).limit(5).all()
-            result = {"leads": [{"id": s.id, "name": s.name, "email": s.email, "message": s.message, "status": s.status} for s in subs]}
-        elif name == "audit.get_health":
-            result = {"status": "HEALTHY", "uptime": "72h", "active_modules": 6, "errors_last_24h": 0}
-        elif name == "system.execute_shell":
-            ok = False
-            error = {"code": "NEEDS_APPROVAL", "message": "Policy engine blocked shell execution. Ask user for permission."}
-        elif name == "memory.search":
-            result = {"status": "LOW_CONFIDENCE", "message": "No direct matches found. Please ask clarifying questions or rewrite query."}
-        elif name == "climate.open":
-            result = {"url": "http://localhost:3000/terra-x", "status": "launched"}
-        else:
-            raise ValueError(f"Unknown tool: {name}")
-    except Exception as e:
-        ok = False
-        error = {"code": "TOOL_ERROR", "message": str(e)}
-        
-    latency_ms = int((time.time() - start_time) * 1000)
-    
-    return ToolResultSchema(ok=ok, result=result, error=error, latency_ms=latency_ms)
 
 
 @router.post("/chat", response_model=BrainResponse)
@@ -106,6 +77,20 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
                         "command": {"type": "string", "description": "Command to run"}
                     },
                     "required": ["command"]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "sandbox.run_code",
+                "description": "Run untrusted Python code in the sandbox",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "code": {"type": "string", "description": "Python code to execute"}
+                    },
+                    "required": ["code"]
                 }
             }
         },
