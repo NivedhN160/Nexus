@@ -120,7 +120,7 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
     
     try:
         response = client.chat.completions.create(
-            model="llama3-70b-8192",
+            model="llama-3.1-70b-versatile",
             messages=messages,
             tools=tools,
             tool_choice="auto"
@@ -148,7 +148,7 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
             
             # Second call to LLM after tool results
             second_response = client.chat.completions.create(
-                model="llama3-70b-8192",
+                model="llama-3.1-70b-versatile",
                 messages=messages
             )
             final_answer = second_response.choices[0].message.content
@@ -165,4 +165,6 @@ def handle_message(req: BrainRequest, db: Session = Depends(get_db)):
         )
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
