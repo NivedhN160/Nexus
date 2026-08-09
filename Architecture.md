@@ -48,5 +48,4 @@ The following modules are fully wired and functional within the Nexus Web UI:
 ## What is NOT in Nexus Web?
 To maintain a robust, production-ready core, certain experimental projects remain separated:
 - **N-OS:** The separate desktop OS interface.
-- **Labs that require paid APIs:** Bedrock Civic Twin, heavy weather API demos (unless keys provided).
 - **Billing / Stripe:** Nexus is a personal tool; it does not charge users.

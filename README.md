@@ -76,7 +76,6 @@ graph TD
 
 ## Current limitations
 - The system is designed for single-user scale.
-- Labs modules (Terra-X, Stock Analyser) are currently unavailable in the core web environment as they require heavy computational or paid-API resources.
 - Social Graph execution uses mock adapters unless explicit OAuth credentials are provided.
 
 ## Roadmap

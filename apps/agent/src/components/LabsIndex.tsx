@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ExternalLink, Database, Cpu, Globe, UserCheck } from 'lucide-react';
 
-export default function LabsIndex() {
+export default function LabsIndex({ onOpenLab }: { onOpenLab?: (id: string) => void }) {
   const myLabs = [
-    { title: 'Terra-X', desc: 'Global climate modeling & offline weather', status: 'Unavailable', icon: Globe },
-    { title: 'Stock Analyser', desc: 'Realtime stock simulator & charting', status: 'Unavailable', icon: Cpu }
+    { id: 'terra-x', title: 'Terra-X', desc: 'Global climate modeling & offline weather', status: 'Active', icon: Globe },
+    { id: 'stock', title: 'Stock Analyser', desc: 'Realtime stock simulator & charting', status: 'Active', icon: Cpu }
   ];
 
   const [isPresent, setIsPresent] = useState(false);
@@ -48,10 +48,12 @@ export default function LabsIndex() {
               </span>
             </div>
             <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px', color: '#888' }}>{lab.title}</h3>
+              <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px', color: '#fff' }}>{lab.title}</h3>
               <p className="text-muted" style={{ fontSize: '13px' }}>{lab.desc}</p>
             </div>
-            <button disabled style={{ marginTop: 'auto', padding: '8px', background: '#333', color: '#666', border: 'none', borderRadius: '4px', cursor: 'not-allowed' }}>
+            <button 
+              onClick={() => onOpenLab && onOpenLab(lab.id)}
+              style={{ marginTop: 'auto', padding: '8px', background: 'var(--accent-teal)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}>
               Open
             </button>
           </div>
